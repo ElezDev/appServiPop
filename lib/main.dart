@@ -6,6 +6,7 @@ import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
+import 'package:servipopapp/views/favorites/favorites_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/home_view.dart';
 import 'package:servipopapp/views/profile/profile_view.dart';
@@ -142,10 +143,3 @@ class SearchView extends StatelessWidget {
   }
 }
 
-class FavoritesView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
-    return Center(child: Text(localizations.favorites)); // Usa la traducción
-  }
-}

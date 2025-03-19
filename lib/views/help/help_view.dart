@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:servipopapp/localizations.dart'; // Importa AppLocalizations
+
 
 class HelpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context); // Obtén las traducciones
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Ayuda',
+          localizations.helpTitle, // Título traducido
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -52,9 +56,8 @@ class HelpView extends StatelessWidget {
                     children: [
                       _buildHelpCard(
                         icon: Icons.help_outline,
-                        title: '¿Cómo usar la aplicación?',
-                        description:
-                            'Explora nuestra guía paso a paso para aprender a utilizar todas las funciones de la aplicación.',
+                        title: localizations.howToUse, // Título traducido
+                        description: localizations.howToUseDescription, // Descripción traducida
                         onTap: () {
                           // Navegar a una vista detallada
                         },
@@ -62,9 +65,8 @@ class HelpView extends StatelessWidget {
                       SizedBox(height: 16),
                       _buildHelpCard(
                         icon: Icons.payment,
-                        title: 'Métodos de pago',
-                        description:
-                            'Consulta los métodos de pago disponibles y cómo realizar transacciones seguras.',
+                        title: localizations.paymentMethods, // Título traducido
+                        description: localizations.paymentMethodsDescription, // Descripción traducida
                         onTap: () {
                           // Navegar a una vista detallada
                         },
@@ -72,9 +74,8 @@ class HelpView extends StatelessWidget {
                       SizedBox(height: 16),
                       _buildHelpCard(
                         icon: Icons.security,
-                        title: 'Seguridad y privacidad',
-                        description:
-                            'Conoce cómo protegemos tus datos y garantizamos tu privacidad.',
+                        title: localizations.securityAndPrivacy, // Título traducido
+                        description: localizations.securityAndPrivacyDescription, // Descripción traducida
                         onTap: () {
                           // Navegar a una vista detallada
                         },
@@ -82,9 +83,8 @@ class HelpView extends StatelessWidget {
                       SizedBox(height: 16),
                       _buildHelpCard(
                         icon: Icons.contact_support,
-                        title: 'Contacto',
-                        description:
-                            '¿Necesitas ayuda adicional? Contáctanos directamente desde aquí.',
+                        title: localizations.contact, // Título traducido
+                        description: localizations.contactDescription, // Descripción traducida
                         onTap: () {
                           // Navegar a una vista de contacto
                         },
@@ -93,7 +93,7 @@ class HelpView extends StatelessWidget {
                   ),
                 ),
               ),
-              _buildFooter(), // Footer agregado aquí
+              _buildFooter(localizations), // Footer con traducciones
             ],
           ),
         ),
@@ -152,7 +152,7 @@ class HelpView extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(AppLocalizations localizations) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class HelpView extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Desarrollado por ElezDevTech',
+              localizations.developedBy, // Texto traducido
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[700],
@@ -174,7 +174,7 @@ class HelpView extends StatelessWidget {
             ),
             SizedBox(height: 4),
             Text(
-              '© 2025 - Todos los derechos reservados',
+              localizations.copyright, // Texto traducido
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],

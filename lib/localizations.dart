@@ -23,6 +23,25 @@ class AppLocalizations {
   String get search => Intl.message('Search', name: 'search');
   String get favorites => Intl.message('Favorites', name: 'favorites');
   String get profile => Intl.message('Profile', name: 'profile');
+   String get helpTitle => Intl.message('Help', name: 'helpTitle');
+  String get howToUse => Intl.message('How to use the app?', name: 'howToUse');
+  String get howToUseDescription => Intl.message(
+      'Explore our step-by-step guide to learn how to use all the features of the app.',
+      name: 'howToUseDescription');
+  String get paymentMethods => Intl.message('Payment Methods', name: 'paymentMethods');
+  String get paymentMethodsDescription => Intl.message(
+      'Check the available payment methods and how to make secure transactions.',
+      name: 'paymentMethodsDescription');
+  String get securityAndPrivacy => Intl.message('Security and Privacy', name: 'securityAndPrivacy');
+  String get securityAndPrivacyDescription => Intl.message(
+      'Learn how we protect your data and ensure your privacy.',
+      name: 'securityAndPrivacyDescription');
+  String get contact => Intl.message('Contact', name: 'contact');
+  String get contactDescription => Intl.message(
+      'Need additional help? Contact us directly from here.',
+      name: 'contactDescription');
+  String get developedBy => Intl.message('Developed by ElezDevTech', name: 'developedBy');
+  String get copyright => Intl.message('© 2025 - All rights reserved', name: 'copyright');
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
