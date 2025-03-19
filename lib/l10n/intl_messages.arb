@@ -1,0 +1,28 @@
+{
+  "@@last_modified": "2025-03-18T20:08:15.097790",
+  "appTitle": "Domestic Services",
+  "@appTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "home": "Home",
+  "@home": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "search": "Search",
+  "@search": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "favorites": "Favorites",
+  "@favorites": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "profile": "Profile",
+  "@profile": {
+    "type": "text",
+    "placeholders": {}
+  }
+}
