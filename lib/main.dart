@@ -10,6 +10,7 @@ import 'package:servipopapp/views/favorites/favorites_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/home_view.dart';
 import 'package:servipopapp/views/profile/profile_view.dart';
+import 'package:servipopapp/views/search/search_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart'; // Importa el archivo de localizaciones
 import 'package:flutter_localizations/flutter_localizations.dart'; // Importa las localizaciones de Flutter
@@ -84,7 +85,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
+    final localizations = AppLocalizations.of(context); 
 
     return Scaffold(
       body: _screens[_selectedIndex],
@@ -112,19 +113,19 @@ class _MainAppState extends State<MainApp> {
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: localizations.home, // Usa la traducción
+                label: localizations.home,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.search),
-                label: localizations.search, // Usa la traducción
+                label: localizations.search, 
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite),
-                label: localizations.favorites, // Usa la traducción
+                label: localizations.favorites,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
-                label: localizations.profile, // Usa la traducción
+                label: localizations.profile, 
               ),
             ],
           ),
@@ -134,12 +135,4 @@ class _MainAppState extends State<MainApp> {
   }
 }
 
-// Pantallas adicionales (puedes moverlas a sus propios archivos)
-class SearchView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
-    return Center(child: Text(localizations.search)); // Usa la traducción
-  }
-}
 
