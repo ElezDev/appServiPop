@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
 import 'package:servipopapp/views/auth/login_view.dart';
+import 'package:servipopapp/views/auth/onboarding/OnboardingManager.dart';
+import 'package:servipopapp/views/auth/onboarding/onboarding_view.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
-import 'package:servipopapp/views/favorites/favorites_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
-import 'package:servipopapp/views/home/home_view.dart';
-import 'package:servipopapp/views/profile/profile_view.dart';
-import 'package:servipopapp/views/search/search_view.dart';
+import 'package:servipopapp/views/home/navigation_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
-import 'package:servipopapp/localizations.dart'; // Importa el archivo de localizaciones
-import 'package:flutter_localizations/flutter_localizations.dart'; // Importa las localizaciones de Flutter
-import 'core/styles/app_theme.dart';
+import 'package:servipopapp/localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:servipopapp/core/styles/app_theme.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final isOnboardingCompleted = await OnboardingManager.isOnboardingCompleted();
+  runApp(MyApp(isOnboardingCompleted: isOnboardingCompleted));
 }
 
 class MyApp extends StatelessWidget {
+  final bool isOnboardingCompleted;
+
+  const MyApp({Key? key, required this.isOnboardingCompleted}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -38,17 +43,17 @@ class MyApp extends StatelessWidget {
             title: 'Servicios Domésticos',
             theme: appTheme,
             locale: languageProvider.locale,
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
+            localizationsDelegates: const [
+              AppLocalizationsDelegate(),
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
             ],
-            supportedLocales: [
-              const Locale('en', ''), // Inglés
-              const Locale('es', ''), // Español
+            supportedLocales: const [
+              Locale('en', ''), 
+              Locale('es', ''), 
             ],
             routes: {
-              '/': (context) => SplashScreen(),
+              '/': (context) => isOnboardingCompleted ? SplashScreen() : OnboardingPageView(),
               '/login': (context) => LoginView(),
               '/home': (context) => MainApp(),
               '/register': (context) => RegisterView(),
@@ -61,78 +66,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-class MainApp extends StatefulWidget {
-  @override
-  _MainAppState createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    HomeView(),
-    SearchView(),
-    FavoritesView(),
-    ProfileView(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); 
-
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, -5),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.green,
-            unselectedItemColor: Colors.grey[600],
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: localizations.home,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: localizations.search, 
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: localizations.favorites,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: localizations.profile, 
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-

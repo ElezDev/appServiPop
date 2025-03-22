@@ -45,6 +45,7 @@ dependencies:
   intl_translation: ^0.20.1
   flutter_localizations:
     sdk: flutter
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
   assets:
     - assets/flags/espana.png
     - assets/flags/reino.png
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
