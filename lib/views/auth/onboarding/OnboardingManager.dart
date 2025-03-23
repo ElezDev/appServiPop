@@ -8,8 +8,8 @@ class OnboardingManager {
     return prefs.getBool(_keyOnboardingCompleted) ?? false;
   }
 
-  static Future<void> completeOnboarding() async {
+  static Future<void> setOnboardingCompleted(bool completed) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyOnboardingCompleted, true);
+    await prefs.setBool(_keyOnboardingCompleted, completed);
   }
 }
