@@ -10,6 +10,7 @@ import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/navigation_view.dart';
+import 'package:servipopapp/views/provider/location_provider.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => LocationProvider()), 
       ],
       child: Builder(
         builder: (context) {

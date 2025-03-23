@@ -4,6 +4,7 @@ import 'package:servipopapp/localizations.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
+import 'package:servipopapp/views/provider/location_provider.dart';
 import 'package:servipopapp/widgets/category_list_widget.dart';
 import 'package:servipopapp/widgets/carousel_widget.dart';
 import 'package:servipopapp/widgets/provider_grid_widget.dart';
@@ -19,12 +20,14 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     Provider.of<CategoryProvider>(context, listen: false).fetchCategories();
+    Provider.of<LocationProvider>(context, listen: false).getCurrentLocation(); // Obtener ubicación
   }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final languageProvider = Provider.of<LanguageProvider>(context);
+    final locationProvider = Provider.of<LocationProvider>(context); // Obtener LocationProvider
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
@@ -51,11 +54,33 @@ class _HomeViewState extends State<HomeView> {
                 color: Colors.black12,
                 blurRadius: 10,
                 offset: Offset(0, 5),
-              ),
+              )
             ],
           ),
         ),
         elevation: 10,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.location_on, color: Colors.white),
+            onPressed: () {
+              // Mostrar la ubicación actual
+              if (locationProvider.currentPosition != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'Ubicación: ${locationProvider.currentPosition!.latitude}, ${locationProvider.currentPosition!.longitude}'),
+                  ),
+                );
+              } else if (locationProvider.error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(locationProvider.error!),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Column(

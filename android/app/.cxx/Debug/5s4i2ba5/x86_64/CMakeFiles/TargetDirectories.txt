@@ -1,0 +1,2 @@
+D:/Desktop/Astrid/servipopapp/android/app/.cxx/Debug/5s4i2ba5/x86_64/CMakeFiles/edit_cache.dir
+D:/Desktop/Astrid/servipopapp/android/app/.cxx/Debug/5s4i2ba5/x86_64/CMakeFiles/rebuild_cache.dir
