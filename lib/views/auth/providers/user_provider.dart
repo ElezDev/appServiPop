@@ -18,13 +18,13 @@ class UserProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> loadUser(String token) async {
+  Future<void> loadUser() async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _user = await _userService.getUserProfile(token);
+      _user = await _userService.getUserProfile();
       _error = null;
     } catch (e) {
       _user = null;

@@ -2,11 +2,15 @@
 import 'package:dio/dio.dart';
 import 'package:servipopapp/core/dio_client.dart';
 import 'package:servipopapp/models/user_model.dart';
+import 'package:servipopapp/services/auth_service.dart';
 
 class UserService {
   final Dio _dio = DioClient.dio;
+  final AuthService _authService = AuthService();
 
-  Future<User> getUserProfile(String token) async {
+  Future<User> getUserProfile() async {
+  final token = await _authService.getToken();
+
     try {
       final response = await _dio.get(
         'user', 
