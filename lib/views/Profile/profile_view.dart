@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:servipopapp/models/user_model.dart';
+import 'package:servipopapp/views/Profile/become_provider_view.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
 
 class ProfileView extends StatelessWidget {
@@ -255,66 +256,66 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  void _showBecomeProviderDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: const Text(
-          'Convertirse en Proveedor',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '¿Deseas convertirte en proveedor de servicios?',
-              style: TextStyle(color: Colors.grey.shade700),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Como proveedor podrás:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue.shade800,
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildFeatureItem('Publicar tus servicios'),
-            _buildFeatureItem('Gestionar tus ofertas'),
-            _buildFeatureItem('Recibir solicitudes de clientes'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+ void _showBecomeProviderDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      title: const Text(
+        'Convertirse en Proveedor',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '¿Deseas convertirte en proveedor de servicios?',
+            style: TextStyle(color: Colors.grey.shade700),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+          const SizedBox(height: 10),
+          Text(
+            'Como proveedor podrás:',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.blue.shade800,
             ),
-            onPressed: () {
-              // Lógica para convertir en proveedor
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Solicitud para ser proveedor enviada'),
-                ),
-              );
-            },
-            child: const Text('Confirmar', style: TextStyle(color: Colors.white)),
           ),
+          const SizedBox(height: 10),
+          _buildFeatureItem('Publicar tus servicios'),
+          _buildFeatureItem('Gestionar tus ofertas'),
+          _buildFeatureItem('Recibir solicitudes de clientes'),
         ],
       ),
-    );
-  }
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue.shade800,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context); // Cierra el diálogo
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BecomeProviderScreen(),
+              ),
+            );
+          },
+          child: const Text('Confirmar', style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildFeatureItem(String text) {
     return Padding(

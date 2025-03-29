@@ -16,10 +16,8 @@ class LocationProvider with ChangeNotifier {
 
   Future<void> getCurrentLocation() async {
     try {
-      // Verificar y solicitar permisos
       final status = await Permission.location.request();
       if (status.isGranted) {
-        // Obtener la ubicación
         _currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );

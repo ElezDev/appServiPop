@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:servipopapp/services/service_provider_provider.dart';
 import 'package:servipopapp/services/user_service.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
 import 'package:servipopapp/views/auth/login_view.dart';
@@ -28,25 +29,25 @@ void main() {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider(create: (_) => ServiceProviderProvider()),
+
         ChangeNotifierProvider(
-          create: (_) => UserProvider(
-            userService: UserService(), 
-          ),
+          create: (_) => UserProvider(userService: UserService()),
         ),
       ],
-      child:  const MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-   const MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
-        Future.delayed( const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () {
           FlutterNativeSplash.remove();
         });
 
@@ -60,17 +61,17 @@ class MyApp extends StatelessWidget {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],
-          supportedLocales:  const [
+          supportedLocales: const [
             Locale('en', ''), // English
             Locale('es', ''), // Spanish
           ],
           routes: {
-            '/': (context) =>  const SplashScreen(),
-            '/login': (context) =>  const LoginView(),
-            '/home': (context) =>  const MainApp(),
-            '/register': (context) =>  const RegisterView(),
-            '/forgot-password': (context) =>  ForgotPasswordView(),
-            '/help': (context) =>  const HelpView(),
+            '/': (context) => const SplashScreen(),
+            '/login': (context) => const LoginView(),
+            '/home': (context) => const MainApp(),
+            '/register': (context) => const RegisterView(),
+            '/forgot-password': (context) => ForgotPasswordView(),
+            '/help': (context) => const HelpView(),
           },
         );
       },
