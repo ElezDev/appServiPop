@@ -5,7 +5,6 @@ class DioClient {
   static final DioClient _instance = DioClient._internal();
   late Dio _dio;
 
-  // Constructor privado
   DioClient._internal() {
     _dio = Dio(BaseOptions(
       baseUrl: 'http://192.168.101.5:8000/api/',

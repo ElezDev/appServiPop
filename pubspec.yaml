@@ -31,6 +31,7 @@ dependencies:
 
   intl: any
   http_parser: any
+  get: ^4.7.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
