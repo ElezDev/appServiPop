@@ -1,4 +1,3 @@
-// providers/user_provider.dart
 import 'package:flutter/foundation.dart';
 import 'package:servipopapp/models/user_model.dart';
 import 'package:servipopapp/services/user_service.dart';
@@ -40,9 +39,6 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Aquí deberías llamar al servicio para actualizar el usuario
-      // await _userService.updateUserProfile(token, updatedUser);
-      
       _user = updatedUser;
       _error = null;
     } catch (e) {

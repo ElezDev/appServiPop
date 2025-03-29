@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 
 class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -18,7 +20,7 @@ class SplashScreen extends StatelessWidget {
       }
     });
 
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(color: Colors.green),
       ),

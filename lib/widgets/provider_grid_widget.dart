@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:servipopapp/views/provider/provider_profile_view.dart';
 
 class ProviderGridWidget extends StatefulWidget {
+  const ProviderGridWidget({super.key});
+
   @override
   _ProviderGridWidgetState createState() => _ProviderGridWidgetState();
 }
@@ -16,7 +18,7 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
   }
 
   void _loadProviders() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       providers.addAll([
         {
@@ -47,9 +49,9 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
   Widget _buildProviderGrid() {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
@@ -77,7 +79,7 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                     child: Image.network(
                       provider['image'],
                       fit: BoxFit.cover,
@@ -85,7 +87,7 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -97,16 +99,16 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
                           color: Colors.green[900],
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         provider['profession'],
                         style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Row(
                         children: [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          SizedBox(width: 5),
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 5),
                           Text(
                             provider['rating'].toString(),
                             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
@@ -128,9 +130,9 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
   Widget _buildSkeleton() {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
@@ -148,14 +150,14 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
             children: [
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                   child: Container(
                     color: Colors.grey[300], // Color de fondo del skeleton
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -164,13 +166,13 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
                       height: 16,
                       color: Colors.grey[300], // Skeleton para el nombre
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Container(
                       width: 80,
                       height: 14,
                       color: Colors.grey[300], // Skeleton para la profesión
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Container(
@@ -178,7 +180,7 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
                           height: 16,
                           color: Colors.grey[300], // Skeleton para el ícono de estrella
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Container(
                           width: 30,
                           height: 14,

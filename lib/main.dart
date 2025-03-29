@@ -34,19 +34,19 @@ void main() {
           ),
         ),
       ],
-      child:  MyApp(),
+      child:  const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-   MyApp({super.key});
+   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
-        Future.delayed( Duration(seconds: 2), () {
+        Future.delayed( const Duration(seconds: 2), () {
           FlutterNativeSplash.remove();
         });
 
@@ -60,17 +60,17 @@ class MyApp extends StatelessWidget {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],
-          supportedLocales:  [
+          supportedLocales:  const [
             Locale('en', ''), // English
             Locale('es', ''), // Spanish
           ],
           routes: {
-            '/': (context) =>  SplashScreen(),
-            '/login': (context) =>  LoginView(),
-            '/home': (context) =>  MainApp(),
-            '/register': (context) =>  RegisterView(),
+            '/': (context) =>  const SplashScreen(),
+            '/login': (context) =>  const LoginView(),
+            '/home': (context) =>  const MainApp(),
+            '/register': (context) =>  const RegisterView(),
             '/forgot-password': (context) =>  ForgotPasswordView(),
-            '/help': (context) =>  HelpView(),
+            '/help': (context) =>  const HelpView(),
           },
         );
       },

@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Perfil',
           style: TextStyle(
             color: Colors.white,
@@ -23,8 +25,8 @@ class ProfileView extends StatelessWidget {
           children: [
             // Header del Perfil con gradiente
             Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.green, Colors.lightGreen],
                   begin: Alignment.topLeft,
@@ -46,18 +48,18 @@ class ProfileView extends StatelessWidget {
                           color: Colors.black.withOpacity(0.2),
                           blurRadius: 10,
                           spreadRadius: 2,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       radius: 50,
                       backgroundImage: NetworkImage(
                           'https://via.placeholder.com/150'), // Reemplaza con la foto del usuario
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     'Juan Pérez',
                     style: TextStyle(
                       fontSize: 24,
@@ -65,7 +67,7 @@ class ProfileView extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     'juan.perez@gmail.com',
                     style: TextStyle(
@@ -79,7 +81,7 @@ class ProfileView extends StatelessWidget {
 
             // Información del Usuario
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   _buildInfoTile(
@@ -99,7 +101,7 @@ class ProfileView extends StatelessWidget {
 
             // Acciones del Usuario
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   _buildActionButton(
@@ -109,7 +111,7 @@ class ProfileView extends StatelessWidget {
                       // Navegar a la pantalla de editar perfil
                     },
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildActionButton(
                     icon: Icons.lock,
                     label: 'Cambiar Contraseña',
@@ -124,7 +126,7 @@ class ProfileView extends StatelessWidget {
 
             // Sección de Servicios con scroll horizontal
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -136,9 +138,9 @@ class ProfileView extends StatelessWidget {
                       color: Colors.green[900],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   // Lista de servicios con scroll horizontal
-                  Container(
+                  SizedBox(
                     height: 180, // Altura fija para el contenedor de tarjetas
                     child: ListView(
                       scrollDirection: Axis.horizontal,
@@ -188,8 +190,8 @@ class ProfileView extends StatelessWidget {
         ? OutlinedButton(
             onPressed: onPressed,
             style: OutlinedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              side: BorderSide(color: Colors.green),
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              side: const BorderSide(color: Colors.green),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -198,10 +200,10 @@ class ProfileView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon, color: Colors.green),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Text(
                   label,
-                  style: TextStyle(fontSize: 16, color: Colors.green),
+                  style: const TextStyle(fontSize: 16, color: Colors.green),
                 ),
               ],
             ),
@@ -210,7 +212,7 @@ class ProfileView extends StatelessWidget {
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
-              padding: EdgeInsets.symmetric(vertical: 15),
+              padding: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -219,10 +221,10 @@ class ProfileView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon, color: Colors.white),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Text(
                   label,
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ],
             ),
@@ -257,19 +259,19 @@ class ProfileView extends StatelessWidget {
     return services.map((service) {
       return Container(
         width: 160, // Ancho fijo para cada tarjeta
-        margin: EdgeInsets.only(right: 10),
+        margin: const EdgeInsets.only(right: 10),
         child: Card(
           elevation: 3,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(service['icon'] as IconData, color: Colors.green, size: 30),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   service['title'] as String,
                   style: TextStyle(
@@ -278,7 +280,7 @@ class ProfileView extends StatelessWidget {
                     color: Colors.green[900],
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   service['description'] as String,
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),

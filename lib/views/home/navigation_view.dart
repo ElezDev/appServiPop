@@ -7,6 +7,8 @@ import 'package:servipopapp/views/search/search_view.dart';
 import 'package:servipopapp/localizations.dart';
 
 class MainApp extends StatefulWidget {
+  const MainApp({super.key});
+
   @override
   _MainAppState createState() => _MainAppState();
 }
@@ -15,9 +17,9 @@ class _MainAppState extends State<MainApp> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    HomeView(),
-    SearchView(),
-    FavoritesView(),
+    const HomeView(),
+    const SearchView(),
+     FavoritesView(),
     ProfileView(),
   ];
 
@@ -34,7 +36,7 @@ class _MainAppState extends State<MainApp> {
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           boxShadow: [
             BoxShadow(
@@ -45,7 +47,7 @@ class _MainAppState extends State<MainApp> {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
@@ -53,22 +55,22 @@ class _MainAppState extends State<MainApp> {
             backgroundColor: Colors.white,
             selectedItemColor: Colors.green,
             unselectedItemColor: Colors.grey[600],
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: const Icon(Icons.home),
                 label: localizations.home,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
                 label: localizations.search, 
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
+                icon: const Icon(Icons.favorite),
                 label: localizations.favorites,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
+                icon: const Icon(Icons.person),
                 label: localizations.profile, 
               ),
             ],

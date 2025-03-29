@@ -7,6 +7,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:servipopapp/core/dio_client.dart';
 
 class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
+
   @override
   _RegisterViewState createState() => _RegisterViewState();
 }
@@ -31,12 +33,12 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registro', style: TextStyle(color: Colors.white)),
+        title: const Text('Registro', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.green[800],
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -45,21 +47,21 @@ class _RegisterViewState extends State<RegisterView> {
               // _buildHeader(),
               // SizedBox(height: 20),
               _buildAvatarPicker(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildNameField(),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               _buildLastnameField(),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               _buildEmailField(),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               _buildPhoneField(),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               _buildAddressField(),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               _buildPasswordField(),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               _buildRegisterButton(),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               _buildLoginLink(),
             ],
           ),
@@ -73,7 +75,7 @@ class _RegisterViewState extends State<RegisterView> {
   Widget _buildHeader() {
     return Column(
       children: [
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         Text(
           'Crea tu cuenta',
           style: TextStyle(
@@ -82,7 +84,7 @@ class _RegisterViewState extends State<RegisterView> {
             color: Colors.green[900],
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Text(
           'Completa tus datos para comenzar',
           style: TextStyle(color: Colors.grey[600]),
@@ -103,11 +105,11 @@ class _RegisterViewState extends State<RegisterView> {
                 _avatarFile != null ? FileImage(File(_avatarFile!.path)) : null,
             child:
                 _avatarFile == null
-                    ? Icon(Icons.camera_alt, size: 30, color: Colors.grey)
+                    ? const Icon(Icons.camera_alt, size: 30, color: Colors.grey)
                     : null,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         TextButton.icon(
           onPressed: _showImageSourceDialog,
           icon: Icon(Icons.edit, size: 16, color: Colors.green[700]),
@@ -186,13 +188,13 @@ class _RegisterViewState extends State<RegisterView> {
       onPressed: _isLoading ? null : _submitForm,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.green[800],
-        padding: EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       child:
           _isLoading
-              ? CircularProgressIndicator(color: Colors.white)
-              : Text('REGISTRARSE', style: TextStyle(fontSize: 16, color: Colors.white)),
+              ? const CircularProgressIndicator(color: Colors.white)
+              : const Text('REGISTRARSE', style: TextStyle(fontSize: 16, color: Colors.white)),
     );
   }
 
@@ -341,7 +343,7 @@ class _RegisterViewState extends State<RegisterView> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Permiso denegado para $feature'),
-        action: SnackBarAction(
+        action: const SnackBarAction(
           label: 'Ajustes',
           textColor: Colors.white,
           onPressed: openAppSettings,
@@ -407,7 +409,7 @@ class _RegisterViewState extends State<RegisterView> {
               '¡Registro exitoso!',
               style: TextStyle(color: Colors.green[800]),
             ),
-            content: Text('Tu cuenta ha sido creada correctamente.'),
+            content: const Text('Tu cuenta ha sido creada correctamente.'),
             actions: [
               TextButton(
                 onPressed: () {

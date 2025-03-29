@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:servipopapp/widgets/onboarding_widget.dart';
 
 class OnboardingPageView extends StatefulWidget {
+  const OnboardingPageView({super.key});
+
   @override
   _OnboardingPageViewState createState() => _OnboardingPageViewState();
 }
@@ -127,7 +129,7 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
                   child: LinearProgressIndicator(
                     value: (_currentPage + 1) / _onboardingScreens.length,
                     backgroundColor: Colors.white30,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -177,7 +179,7 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
                         _currentPage == _onboardingScreens.length - 1
                             ? 'Comenzar'
                             : 'Siguiente',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white, // Texto en blanco para contrastar con el degradado
                           fontWeight: FontWeight.bold,

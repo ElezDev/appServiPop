@@ -1,20 +1,31 @@
-// lib/widgets/carousel_widget.dart
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class CarouselWidget extends StatefulWidget {
+  const CarouselWidget({super.key});
+
   @override
   _CarouselWidgetState createState() => _CarouselWidgetState();
 }
 
 class _CarouselWidgetState extends State<CarouselWidget> {
   final List<String> carouselImages = [
-    'https://img.freepik.com/foto-gratis/trabajadores-manuales-trabajadoras-encogiendose-hombros-expresiones-dudosas-saber-que-empezar-su-trabajo-joven-sosteniendo-maquina-perforacion-algunas-dudas-e-incertidumbre_273609-7944.jpg?t=st=1741993115~exp=1741996715~hmac=a9e32c9bd483038b2f885b5f605f835d4aa0353b2ef91e62fd85deaf0544bb70&w=1380',
-    'https://img.freepik.com/foto-gratis/jardinero-weedwacker-cortando-cesped-jardin_329181-20539.jpg?t=st=1741992852~exp=1741996452~hmac=6fd018ab23ab9d0cf7590778df6d32cdc86737acdaf57a822e8b99258fd716a0&w=1060',
-    'https://img.freepik.com/vector-gratis/limpiadores-productos-limpieza-servicio-limpieza_18591-52068.jpg?t=st=1741992799~exp=1741996399~hmac=539dca26c908916be167e878c243e3b0034654fd05d5cd473919bc2166703d92&w=740',
+    'assets/images/banner2.jpg',
+    'assets/images/banner3.jpg',
+    'assets/images/bn1.jpg',
   ];
 
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (var imagePath in carouselImages) {
+        precacheImage(AssetImage(imagePath), context);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +39,7 @@ class _CarouselWidgetState extends State<CarouselWidget> {
             aspectRatio: 16 / 9,
             autoPlayCurve: Curves.fastOutSlowIn,
             enableInfiniteScroll: true,
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            autoPlayAnimationDuration: const Duration(milliseconds: 800),
             viewportFraction: 0.8,
             onPageChanged: (index, reason) {
               setState(() {
@@ -37,15 +48,32 @@ class _CarouselWidgetState extends State<CarouselWidget> {
             },
           ),
           items: carouselImages.map((imageUrl) {
-            return Container(
-              margin: EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            return Builder(
+              builder: (BuildContext context) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image: AssetImage(imageUrl),
+                      fit: BoxFit.cover,
+                      // Añade esto para manejar errores de carga
+                      onError: (exception, stackTrace) {
+                        debugPrint('Error loading image: $imageUrl');
+                      },
+                    ),
+                  ),
+                  child: Center(
+                    // Widget de respaldo si la imagen no carga
+                    child: Image.asset(imageUrl, errorBuilder:
+                        (context, error, stackTrace) {
+                      return const Text('Imagen no encontrada',
+                          style: TextStyle(color: Colors.white));
+                    }),
+                  ),
+                );
+              },
             );
           }).toList(),
         ),
@@ -56,7 +84,7 @@ class _CarouselWidgetState extends State<CarouselWidget> {
             return Container(
               width: 8.0,
               height: 8.0,
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _currentIndex == index

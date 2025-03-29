@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MapWidget extends StatefulWidget {
   final LatLng initialPosition; // Posición inicial del mapa
 
-  MapWidget({required this.initialPosition});
+  const MapWidget({super.key, required this.initialPosition});
 
   @override
   _MapWidgetState createState() => _MapWidgetState();
@@ -42,7 +42,7 @@ class _MapWidgetState extends State<MapWidget> {
           height: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 10,
@@ -64,9 +64,9 @@ class _MapWidgetState extends State<MapWidget> {
               ),
               markers: {
                 Marker(
-                  markerId: MarkerId("current_location"),
+                  markerId: const MarkerId("current_location"),
                   position: widget.initialPosition,
-                  infoWindow: InfoWindow(title: "Tu ubicación"),
+                  infoWindow: const InfoWindow(title: "Tu ubicación"),
                 ),
               },
               gestureRecognizers: {
@@ -88,9 +88,9 @@ class _MapWidgetState extends State<MapWidget> {
           right: 16,
           child: FloatingActionButton(
             onPressed: _goToMyLocation,
-            child: Icon(Icons.my_location, color: Colors.white),
             backgroundColor: Colors.green,
             mini: true,
+            child: const Icon(Icons.my_location, color: Colors.white),
           ),
         ),
       ],

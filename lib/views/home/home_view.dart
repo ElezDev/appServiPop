@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:servipopapp/localizations.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
-import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
 import 'package:servipopapp/views/home/user_drawer.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
@@ -16,6 +15,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
   @override
   _HomeViewState createState() => _HomeViewState();
 }
@@ -23,6 +24,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin {
   @override
    bool get wantKeepAlive => true; 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -47,7 +49,7 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -160,9 +162,9 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                         child: FadeInAnimation(child: widget),
                       ),
                   children: [
-                    CarouselWidget(),
-                    CategoryListWidget(),
-                    ProviderGridWidget(),
+                    const CarouselWidget(),
+                    const CategoryListWidget(),
+                    const ProviderGridWidget(),
                   ],
                 ),
               ),

@@ -48,7 +48,7 @@ class AuthService {
       await _storageService.saveRefreshToken(authResponse.refreshToken);
       return authResponse;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -69,7 +69,7 @@ class AuthService {
 
       return authResponse;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 

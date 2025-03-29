@@ -4,8 +4,7 @@ import 'package:url_launcher/url_launcher.dart'; // Para abrir la aplicación de
 class ProviderProfileView extends StatelessWidget {
   final Map<String, dynamic> provider;
 
-  const ProviderProfileView({Key? key, required this.provider})
-      : super(key: key);
+  const ProviderProfileView({super.key, required this.provider});
 
   // Método para abrir el marcador telefónico con el número prellenado
 
@@ -16,7 +15,7 @@ class ProviderProfileView extends StatelessWidget {
       await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se encontró una aplicación para realizar llamadas')),
+        const SnackBar(content: Text('No se encontró una aplicación para realizar llamadas')),
       );
     }
   }
@@ -31,7 +30,7 @@ class ProviderProfileView extends StatelessWidget {
         backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,7 +44,7 @@ class ProviderProfileView extends StatelessWidget {
                 width: double.infinity,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Nombre y calificación en la misma fila
             Row(
@@ -64,8 +63,8 @@ class ProviderProfileView extends StatelessWidget {
                 // Calificación
                 Row(
                   children: [
-                    Icon(Icons.star, color: Colors.amber, size: 20),
-                    SizedBox(width: 5),
+                    const Icon(Icons.star, color: Colors.amber, size: 20),
+                    const SizedBox(width: 5),
                     Text(
                       provider['rating'].toString(),
                       style: TextStyle(
@@ -77,7 +76,7 @@ class ProviderProfileView extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             // Profesión
             Text(
@@ -87,9 +86,9 @@ class ProviderProfileView extends StatelessWidget {
                 color: Colors.grey[700],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Sección de descripción
             Text(
@@ -100,7 +99,7 @@ class ProviderProfileView extends StatelessWidget {
                 color: Colors.green[900],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               provider['description'],
               style: TextStyle(
@@ -108,7 +107,7 @@ class ProviderProfileView extends StatelessWidget {
                 color: Colors.grey[700],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Botón de contacto con número quemado
             // Botón de contacto con número quemado
@@ -117,8 +116,8 @@ class ProviderProfileView extends StatelessWidget {
                 onPressed: () {
                   _openPhoneDialer('3126285281', context);
                 },
-                icon: Icon(Icons.phone, color: Colors.white),
-                label: Text(
+                icon: const Icon(Icons.phone, color: Colors.white),
+                label: const Text(
                   'Contactar',
                   style: TextStyle(
                     fontSize: 18,
@@ -127,7 +126,7 @@ class ProviderProfileView extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green, // Color de fondo
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                       horizontal: 30, vertical: 15), // Padding
                   shape: RoundedRectangleBorder(
                     borderRadius:
@@ -137,7 +136,7 @@ class ProviderProfileView extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
 
             // Sección de reseñas
             Text(
@@ -148,7 +147,7 @@ class ProviderProfileView extends StatelessWidget {
                 color: Colors.green[900],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ..._buildReviewsList(), // Lista de reseñas
           ],
         ),
@@ -179,7 +178,7 @@ class ProviderProfileView extends StatelessWidget {
 
     return reviews.map((review) {
       return Padding(
-        padding: EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -197,8 +196,8 @@ class ProviderProfileView extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    SizedBox(width: 5),
+                    const Icon(Icons.star, color: Colors.amber, size: 16),
+                    const SizedBox(width: 5),
                     Text(
                       review['rating'].toString(),
                       style: TextStyle(
@@ -210,7 +209,7 @@ class ProviderProfileView extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
 
             // Comentario
             Text(

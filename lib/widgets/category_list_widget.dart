@@ -4,19 +4,21 @@ import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/category/category_detail_screen.dart';
 
 class CategoryListWidget extends StatelessWidget {
+  const CategoryListWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final categoryProvider = Provider.of<CategoryProvider>(context);
 
     if (categoryProvider.isLoading) {
-      return Center(child: CircularProgressIndicator(color: Colors.green,));
+      return const Center(child: CircularProgressIndicator(color: Colors.green,));
     }
 
-    return Container(
+    return SizedBox(
       height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: categoryProvider.categories.length,
         itemBuilder: (context, index) {
           final category = categoryProvider.categories[index];
@@ -30,7 +32,7 @@ class CategoryListWidget extends StatelessWidget {
               );
             },
             child: Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               child: Column(
                 children: [
                   CircleAvatar(
@@ -43,12 +45,12 @@ class CategoryListWidget extends StatelessWidget {
                         height: 60,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.category, color: Colors.green, size: 30);
+                          return const Icon(Icons.category, color: Colors.green, size: 30);
                         },
                       ),
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     category.name,
                     style: TextStyle(fontSize: 14, color: Colors.grey[700]),

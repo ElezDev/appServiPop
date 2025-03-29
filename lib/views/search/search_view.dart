@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SearchView extends StatefulWidget {
+  const SearchView({super.key});
+
   @override
   _SearchViewState createState() => _SearchViewState();
 }
@@ -14,7 +16,7 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: const Text('Search'),
         centerTitle: true,
       ),
       body: Padding(
@@ -27,7 +29,7 @@ class _SearchViewState extends State<SearchView> {
               controller: searchController,
               decoration: InputDecoration(
                 hintText: 'Search...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -36,13 +38,13 @@ class _SearchViewState extends State<SearchView> {
                 // Handle search logic here
               },
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Category Filter
-            Text(
+            const Text(
               'Filter by Category:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -62,14 +64,14 @@ class _SearchViewState extends State<SearchView> {
                 }).toList(),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Results Section
             Expanded(
               child: ListView.builder(
                 itemCount: 10, // Replace with your dynamic data count
                 itemBuilder: (context, index) {
                   return ListTile(
-                    leading: Icon(Icons.search),
+                    leading: const Icon(Icons.search),
                     title: Text('Result Item ${index + 1}'),
                     subtitle: Text('Category: $selectedCategory'),
                     onTap: () {

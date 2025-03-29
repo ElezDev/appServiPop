@@ -24,11 +24,13 @@ class FavoritesView extends StatelessWidget {
     },
   ];
 
+   FavoritesView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Favoritos',
           style: TextStyle(
             color: Colors.white,
@@ -39,7 +41,7 @@ class FavoritesView extends StatelessWidget {
         ),
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.green, Colors.lightGreen],
               begin: Alignment.topLeft,
@@ -59,9 +61,9 @@ class FavoritesView extends StatelessWidget {
         ),
         child: AnimationLimiter(
           child: ListView(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             children: AnimationConfiguration.toStaggeredList(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               childAnimationBuilder: (widget) => SlideAnimation(
                 horizontalOffset: 50.0,
                 child: FadeInAnimation(
@@ -94,14 +96,14 @@ class FavoritesView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
-      margin: EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
         onTap: () {
           // Acción al tocar la tarjeta
         },
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -115,7 +117,7 @@ class FavoritesView extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               // Detalles del servicio
               Expanded(
                 child: Column(
@@ -129,7 +131,7 @@ class FavoritesView extends StatelessWidget {
                         color: Colors.green[800],
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       description,
                       style: TextStyle(
@@ -137,11 +139,11 @@ class FavoritesView extends StatelessWidget {
                         color: Colors.grey[700],
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        SizedBox(width: 4),
+                        const Icon(Icons.star, color: Colors.amber, size: 16),
+                        const SizedBox(width: 4),
                         Text(
                           rating.toString(),
                           style: TextStyle(
@@ -156,7 +158,7 @@ class FavoritesView extends StatelessWidget {
               ),
               // Botón de eliminar de favoritos
               IconButton(
-                icon: Icon(Icons.favorite, color: Colors.red),
+                icon: const Icon(Icons.favorite, color: Colors.red),
                 onPressed: () {
                   // Acción para eliminar de favoritos
                 },

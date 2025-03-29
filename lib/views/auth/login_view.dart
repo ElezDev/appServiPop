@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 
 class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
   @override
   _LoginViewState createState() => _LoginViewState();
 }
@@ -36,13 +38,13 @@ class _LoginViewState extends State<LoginView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 80),
+                  const SizedBox(height: 80),
                   // Logo o imagen
                   Image.asset(
                     'assets/images/onbo1.png',
                     height: 120,
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Text(
                     'Iniciar Sesión',
                     style: TextStyle(
@@ -51,21 +53,21 @@ class _LoginViewState extends State<LoginView> {
                       color: Colors.green[900],
                     ),
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   // Campo de email
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       labelStyle: TextStyle(color: Colors.green[800]),
-                      prefixIcon: Icon(Icons.email, color: Colors.green),
+                      prefixIcon: const Icon(Icons.email, color: Colors.green),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.green),
+                        borderSide: const BorderSide(color: Colors.green),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
+                        borderSide: const BorderSide(color: Colors.green, width: 2),
                       ),
                     ),
                     validator: (value) {
@@ -78,7 +80,7 @@ class _LoginViewState extends State<LoginView> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // Campo de contraseña
                   TextFormField(
                     controller: _passwordController,
@@ -86,7 +88,7 @@ class _LoginViewState extends State<LoginView> {
                     decoration: InputDecoration(
                       labelText: 'Contraseña',
                       labelStyle: TextStyle(color: Colors.green[800]),
-                      prefixIcon: Icon(Icons.lock, color: Colors.green),
+                      prefixIcon: const Icon(Icons.lock, color: Colors.green),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
@@ -102,11 +104,11 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.green),
+                        borderSide: const BorderSide(color: Colors.green),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.green, width: 2),
+                        borderSide: const BorderSide(color: Colors.green, width: 2),
                       ),
                     ),
                     validator: (value) {
@@ -119,7 +121,7 @@ class _LoginViewState extends State<LoginView> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // Botón de "Olvidé mi contraseña"
                   Align(
                     alignment: Alignment.centerRight,
@@ -136,7 +138,7 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   // Botón de Iniciar Sesión
                   ElevatedButton(
                     onPressed: () async {
@@ -155,24 +157,24 @@ class _LoginViewState extends State<LoginView> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green[800],
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       elevation: 5,
                       shadowColor: Colors.green.withOpacity(0.3),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Iniciar Sesión',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // Enlace a la pantalla de registro
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('¿No tienes una cuenta? '),
+                      const Text('¿No tienes una cuenta? '),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/register');

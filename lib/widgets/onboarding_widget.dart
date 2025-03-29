@@ -8,13 +8,13 @@ class OnboardingScreen extends StatelessWidget {
   final Color textColor;
 
   const OnboardingScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.imagePath,
     this.backgroundColor = Colors.blueAccent,
     this.textColor = Colors.white,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class OnboardingScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [Colors.blueAccent, Colors.lightBlueAccent],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
