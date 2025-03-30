@@ -50,14 +50,14 @@ class ProfileView extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          top: 40,
-          left: 20,
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
+        // Positioned(
+        //   top: 40,
+        //   left: 20,
+        //   child: IconButton(
+        //     icon: const Icon(Icons.arrow_back, color: Colors.white),
+        //     onPressed: () => Navigator.pop(context),
+        //   ),
+        // ),
         Positioned(
           top: 40,
           right: 20,

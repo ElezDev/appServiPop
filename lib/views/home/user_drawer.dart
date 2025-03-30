@@ -112,7 +112,6 @@ class UserDrawer extends StatelessWidget {
         title: const Text('Perfil'),
         onTap: () {
           Navigator.pop(context);
-          // Navigator.pushNamed(context, '/profile');
         },
       ),
       ListTile(
@@ -120,7 +119,6 @@ class UserDrawer extends StatelessWidget {
         title: const Text('Configuración'),
         onTap: () {
           Navigator.pop(context);
-          // Navigator.pushNamed(context, '/settings');
         },
       ),
       ListTile(
@@ -139,12 +137,13 @@ class UserDrawer extends StatelessWidget {
       case 'serviceProvider':
         roleSpecificItems.addAll([
           ListTile(
-            leading: const Icon(Icons.admin_panel_settings, color: Colors.green),
-            title: const Text('Panel de Administración'),
+            leading: const Icon(Icons.shop_sharp, color: Colors.green),
+            title: const Text('Publicar Servicio'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/admin');
-            },
+              Navigator.pushNamed(context, '/service-form');
+            },  
+           
           ),
           ListTile(
             leading: const Icon(Icons.people, color: Colors.green),

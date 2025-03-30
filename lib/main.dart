@@ -12,6 +12,7 @@ import 'package:servipopapp/views/auth/register_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/navigation_view.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
+import 'package:servipopapp/views/services/create_service_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
             '/register': (context) => const RegisterView(),
             '/forgot-password': (context) => ForgotPasswordView(),
             '/help': (context) => const HelpView(),
+            '/service-form': (context) => CreateServiceScreen(),
           },
         );
       },
