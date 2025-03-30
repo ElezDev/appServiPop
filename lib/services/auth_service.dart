@@ -37,20 +37,26 @@ class AuthService {
     );
   }
 
-  Future<AuthResponse> login(String email, String password) async {
-    try {
-      final response = await _dio.post('login', data: {
-        'email': email,
-        'password': password,
-      });
-      final authResponse = AuthResponse.fromJson(response.data);
-      await _storageService.saveToken(authResponse.token);
-      await _storageService.saveRefreshToken(authResponse.refreshToken);
-      return authResponse;
-    } catch (e) {
-      rethrow;
+Future<AuthResponse> login(String email, String password) async {
+  try {
+    final response = await _dio.post('login', data: {
+      'email': email,
+      'password': password,
+    });
+    
+    final authResponse = AuthResponse.fromJson(response.data);
+    
+    await _storageService.saveToken(authResponse.token);
+    await _storageService.saveRefreshToken(authResponse.refreshToken);
+        if (authResponse.user.role != null) {
+      await _storageService.saveUserRole(authResponse.user.role!);
     }
+    
+    return authResponse;
+  } catch (e) {
+    rethrow;
   }
+}
 
   Future<AuthResponse> refreshToken() async {
     try {
@@ -84,4 +90,6 @@ class AuthService {
   Future<String?> getRefreshToken() async {
     return await _storageService.getRefreshToken();
   }
+
+  
 }

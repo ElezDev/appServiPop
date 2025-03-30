@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
+import 'package:servipopapp/services/storage_service.dart';
 
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});
@@ -13,6 +14,7 @@ class UserDrawer extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    final storageService = StorageService();
 
     return Drawer(
       child: Column(
@@ -46,43 +48,19 @@ class UserDrawer extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.person, color: Colors.green),
-                  title: const Text('Perfil'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    // Navigator.pushNamed(context, '/profile');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.settings, color: Colors.green),
-                  title: const Text('Configuración'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    // Navigator.pushNamed(context, '/settings');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.help_outline, color: Colors.green),
-                  title: const Text('Ayuda'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/help');
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.green),
-                  title: const Text('Cerrar sesión'),
-                  onTap: () async {
-                    await authProvider.logout();
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
-                ),
-              ],
+            child: FutureBuilder<String?>(
+              future: storageService.getUserRole(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                final userRole = snapshot.data;
+                return ListView(
+                  padding: EdgeInsets.zero,
+                  children: _buildDrawerItems(context, userRole),
+                );
+              },
             ),
           ),
           Container(
@@ -125,5 +103,113 @@ class UserDrawer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildDrawerItems(BuildContext context, String? userRole) {
+    final commonItems = [
+      ListTile(
+        leading: const Icon(Icons.person, color: Colors.green),
+        title: const Text('Perfil'),
+        onTap: () {
+          Navigator.pop(context);
+          // Navigator.pushNamed(context, '/profile');
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.settings, color: Colors.green),
+        title: const Text('Configuración'),
+        onTap: () {
+          Navigator.pop(context);
+          // Navigator.pushNamed(context, '/settings');
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.help_outline, color: Colors.green),
+        title: const Text('Ayuda'),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/help');
+        },
+      ),
+      const Divider(),
+    ];
+
+    final roleSpecificItems = <Widget>[];
+    switch (userRole) {
+      case 'serviceProvider':
+        roleSpecificItems.addAll([
+          ListTile(
+            leading: const Icon(Icons.admin_panel_settings, color: Colors.green),
+            title: const Text('Panel de Administración'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/admin');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.people, color: Colors.green),
+            title: const Text('Gestión de Usuarios'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/user-management');
+            },
+          ),
+        ]);
+        break;
+      case 'user':
+        roleSpecificItems.addAll([
+          ListTile(
+            leading: const Icon(Icons.store, color: Colors.green),
+            title: const Text('Mi Tienda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/my-store');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.analytics, color: Colors.green),
+            title: const Text('Estadísticas'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/stats');
+            },
+          ),
+        ]);
+        break;
+      case 'customer':
+        roleSpecificItems.addAll([
+          ListTile(
+            leading: const Icon(Icons.shopping_bag, color: Colors.green),
+            title: const Text('Mis Compras'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/my-orders');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite, color: Colors.green),
+            title: const Text('Favoritos'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/favorites');
+            },
+          ),
+        ]);
+        break;
+    }
+
+    return [
+      ...commonItems,
+      ...roleSpecificItems,
+      ListTile(
+        leading: const Icon(Icons.logout, color: Colors.green),
+        title: const Text('Cerrar sesión'),
+        onTap: () async {
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          await authProvider.logout();
+          Navigator.pushReplacementNamed(context, '/login');
+        },
+      ),
+    ];
   }
 }
