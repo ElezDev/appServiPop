@@ -10,19 +10,20 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final user = userProvider.user;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: theme.colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeader(context, user),
+            _buildHeader(context, user, theme),
             const SizedBox(height: 20),
-            _buildProfileCard(user),
+            _buildProfileCard(user, theme),
             const SizedBox(height: 20),
-            _buildOptions(context),
+            _buildOptions(context, theme),
             const SizedBox(height: 30),
           ],
         ),
@@ -30,7 +31,7 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, User? user) {
+  Widget _buildHeader(BuildContext context, User? user, ThemeData theme) {
     return Stack(
       children: [
         Container(
@@ -40,8 +41,8 @@ class ProfileView extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.green.shade800,
-                Colors.greenAccent,
+                theme.primaryColor,
+                theme.colorScheme.secondary,
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -50,19 +51,11 @@ class ProfileView extends StatelessWidget {
             ),
           ),
         ),
-        // Positioned(
-        //   top: 40,
-        //   left: 20,
-        //   child: IconButton(
-        //     icon: const Icon(Icons.arrow_back, color: Colors.white),
-        //     onPressed: () => Navigator.pop(context),
-        //   ),
-        // ),
         Positioned(
           top: 40,
           right: 20,
           child: IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
+            icon: Icon(Icons.edit, color: theme.colorScheme.onPrimary),
             onPressed: () {
               // Navegar a la pantalla de edición de perfil
             },
@@ -76,7 +69,7 @@ class ProfileView extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 60,
-                backgroundColor: Colors.white,
+                backgroundColor: theme.colorScheme.onPrimary,
                 child: CircleAvatar(
                   radius: 56,
                   backgroundImage: user?.avatar != null 
@@ -87,18 +80,16 @@ class ProfileView extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 '${user?.name ?? ''} ${user?.lastname ?? ''}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               if (user?.email != null)
                 Text(
                   user!.email!,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onPrimary.withOpacity(0.9),
                   ),
                 ),
             ],
@@ -108,11 +99,11 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileCard(User? user) {
+  Widget _buildProfileCard(User? user, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
-        elevation: 3,
+        elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
@@ -120,12 +111,12 @@ class ProfileView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              _buildInfoRow(Icons.phone, 'Teléfono', user?.phone ?? 'No proporcionado'),
+              _buildInfoRow(Icons.phone, 'Teléfono', user?.phone ?? 'No proporcionado', theme),
               const Divider(height: 30),
-              _buildInfoRow(Icons.location_on, 'Dirección', user?.address ?? 'No proporcionada'),
+              _buildInfoRow(Icons.location_on, 'Dirección', user?.address ?? 'No proporcionada', theme),
               const Divider(height: 30),
               _buildInfoRow(Icons.verified_user, 'Verificación', 
-                  user?.emailVerifiedAt != null ? 'Correo verificado' : 'Correo no verificado'),
+                  user?.emailVerifiedAt != null ? 'Correo verificado' : 'Correo no verificado', theme),
             ],
           ),
         ),
@@ -133,11 +124,11 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String title, String value) {
+  Widget _buildInfoRow(IconData icon, String title, String value, ThemeData theme) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.blue.shade600, size: 24),
+        Icon(icon, color: theme.primaryColor, size: 24),
         const SizedBox(width: 15),
         Expanded(
           child: Column(
@@ -145,16 +136,14 @@ class ProfileView extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                 ),
               ),
               const SizedBox(height: 5),
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -165,7 +154,7 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildOptions(BuildContext context) {
+  Widget _buildOptions(BuildContext context, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -174,10 +163,10 @@ class ProfileView extends StatelessWidget {
             context,
             title: 'Convertirse en Proveedor',
             icon: Icons.store,
-            color: Colors.blue.shade800,
+            color: theme.primaryColor,
+            theme: theme,
             onTap: () {
-              // Lógica para convertirse en proveedor
-              _showBecomeProviderDialog(context);
+              _showBecomeProviderDialog(context, theme);
             },
           ),
           const SizedBox(height: 15),
@@ -185,7 +174,8 @@ class ProfileView extends StatelessWidget {
             context,
             title: 'Configuración',
             icon: Icons.settings,
-            color: Colors.grey.shade700,
+            color: theme.colorScheme.secondary,
+            theme: theme,
             onTap: () {
               // Navegar a configuración
             },
@@ -195,7 +185,8 @@ class ProfileView extends StatelessWidget {
             context,
             title: 'Cerrar Sesión',
             icon: Icons.exit_to_app,
-            color: Colors.red.shade600,
+            color: theme.colorScheme.error,
+            theme: theme,
             onTap: () {
               // Lógica para cerrar sesión
             },
@@ -210,6 +201,7 @@ class ProfileView extends StatelessWidget {
     required String title,
     required IconData icon,
     required Color color,
+    required ThemeData theme,
     required VoidCallback onTap,
   }) {
     return InkWell(
@@ -218,11 +210,11 @@ class ProfileView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: theme.shadowColor.withOpacity(0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -242,89 +234,99 @@ class ProfileView extends StatelessWidget {
             const SizedBox(width: 15),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 16,
+              style: theme.textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w500,
-                color: Colors.grey.shade800,
               ),
             ),
             const Spacer(),
-            Icon(Icons.chevron_right, color: Colors.grey.shade400),
+            Icon(Icons.chevron_right, color: theme.dividerColor),
           ],
         ),
       ),
     );
   }
 
- void _showBecomeProviderDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      title: const Text(
-        'Convertirse en Proveedor',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '¿Deseas convertirte en proveedor de servicios?',
-            style: TextStyle(color: Colors.grey.shade700),
+  void _showBecomeProviderDialog(BuildContext context, ThemeData theme) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          'Convertirse en Proveedor',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(height: 10),
-          Text(
-            'Como proveedor podrás:',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.blue.shade800,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '¿Deseas convertirte en proveedor de servicios?',
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Como proveedor podrás:',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.primaryColor,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildFeatureItem('Publicar tus servicios', theme),
+            _buildFeatureItem('Gestionar tus ofertas', theme),
+            _buildFeatureItem('Recibir solicitudes de clientes', theme),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancelar',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.textTheme.bodyMedium?.color,
+              ),
             ),
           ),
-          const SizedBox(height: 10),
-          _buildFeatureItem('Publicar tus servicios'),
-          _buildFeatureItem('Gestionar tus ofertas'),
-          _buildFeatureItem('Recibir solicitudes de clientes'),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BecomeProviderScreen(),
+                ),
+              );
+            },
+            child: Text(
+              'Confirmar',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+          ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancelar'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue.shade800,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          onPressed: () {
-            Navigator.pop(context); // Cierra el diálogo
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BecomeProviderScreen(),
-              ),
-            );
-          },
-          child: const Text('Confirmar', style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 
-  Widget _buildFeatureItem(String text) {
+  Widget _buildFeatureItem(String text, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(Icons.check_circle, color: Colors.green.shade500, size: 18),
+          Icon(Icons.check_circle, color: theme.primaryColor, size: 18),
           const SizedBox(width: 8),
-          Text(text, style: TextStyle(color: Colors.grey.shade700)),
+          Text(text, style: theme.textTheme.bodyMedium),
         ],
       ),
     );

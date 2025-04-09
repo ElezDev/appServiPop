@@ -13,7 +13,6 @@ import 'package:servipopapp/views/califications/califications_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/navigation_view.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
-import 'package:servipopapp/views/provider/provider_profile_view.dart';
 import 'package:servipopapp/views/services/create_service_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart';
@@ -33,7 +32,6 @@ void main() {
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => ServiceProviderProvider()),
-
         ChangeNotifierProvider(
           create: (_) => UserProvider(userService: UserService()),
         ),
@@ -57,16 +55,20 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Servicios Domésticos',
-          theme: appTheme,
+          theme: appTheme.copyWith(
+            platform: TargetPlatform.android, 
+          ),
+          darkTheme: _buildDarkTheme(), 
           locale: languageProvider.locale,
           localizationsDelegates: const [
             AppLocalizationsDelegate(),
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [
-            Locale('en', ''), // English
-            Locale('es', ''), // Spanish
+            Locale('en', 'US'), 
+            Locale('es', 'ES'),
           ],
           routes: {
             '/': (context) => const SplashScreen(),
@@ -77,12 +79,29 @@ class MyApp extends StatelessWidget {
             '/help': (context) => const HelpView(),
             '/service-form': (context) => CreateServiceScreen(),
             '/rating': (context) => const CalificationsView(),
-            // '/provider-profile:providerId': (context) => const ProviderProfileView(
-              
-            // ),
           },
         );
       },
+    );
+  }
+
+  ThemeData _buildDarkTheme() {
+    return ThemeData.dark().copyWith(
+      primaryColor: Color(0xFF81C784),
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF81C784),
+        secondary:  Color(0xff00C535),
+      ),
+      appBarTheme: AppBarTheme(
+        color: Colors.grey[900],
+      ),
+      cardTheme: CardTheme(
+        color: Colors.grey[850],
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.grey[800],
+      ),
     );
   }
 }

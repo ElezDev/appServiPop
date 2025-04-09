@@ -24,13 +24,11 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
   List<File> _portfolioImages = [];
   Category? _selectedCategory;
   final AuthService _authService = AuthService();
-
   final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    // Cargar categorías al iniciar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<CategoryProvider>(context, listen: false).fetchCategories();
     });
@@ -38,9 +36,7 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
 
   Future<void> _pickImage() async {
     if (_portfolioImages.length >= 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Solo puedes subir hasta 3 imágenes')),
-      );
+      _showErrorSnackbar('Solo puedes subir hasta 3 imágenes');
       return;
     }
 
@@ -52,9 +48,7 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al seleccionar imagen: $e')),
-      );
+      _showErrorSnackbar('Error al seleccionar imagen: $e');
     }
   }
 
@@ -64,52 +58,45 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
     });
   }
 
-void _submitForm() async {
-  if (_formKey.currentState!.validate()) {
+  void _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
     if (_selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Por favor selecciona una categoría')),
-      );
+      _showErrorSnackbar('Por favor selecciona una categoría');
       return;
     }
 
     if (_portfolioImages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Por favor sube al menos una imagen')),
-      );
+      _showErrorSnackbar('Por favor sube al menos una imagen');
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      // Preparamos el FormData para enviar todo en una sola solicitud
-      final formData = FormData();
+      final formData = FormData.fromMap({
+        'title': _titleController.text,
+        'description': _descriptionController.text,
+        'price': _priceController.text,
+        'duration': _durationController.text,
+        'categories[]': _selectedCategory!.id.toString(),
+      });
 
-      // Agregamos los campos básicos
-      formData.fields.addAll([
-        MapEntry('title', _titleController.text),
-        MapEntry('description', _descriptionController.text),
-        MapEntry('price', _priceController.text),
-        MapEntry('duration', _durationController.text),
-        MapEntry('categories[]', _selectedCategory!.id.toString()),
-      ]);
-
-      // Agregamos las imágenes como archivos
       for (var image in _portfolioImages) {
-        String fileName = image.path.split('/').last;
-        formData.files.add(MapEntry(
-          'portfolio_images[]',
-          await MultipartFile.fromFile(image.path, filename: fileName),
-        ));
+        formData.files.add(
+          MapEntry(
+            'portfolio_images[]',
+            await MultipartFile.fromFile(
+              image.path,
+              filename: image.path.split('/').last,
+            ),
+          ),
+        );
       }
 
       final token = await _authService.getToken();
-
       final response = await DioClient.dio.post(
-        'services', // Asegúrate que este es el endpoint correcto
+        'services',
         data: formData,
         options: Options(
           headers: {
@@ -120,58 +107,75 @@ void _submitForm() async {
         ),
       );
 
-      print("Respuesta del servidor: ${response.data}");
-
       if (response.statusCode == 201) {
-        final newService = Service.fromJson(response.data);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Servicio creado exitosamente')),
-        );
+        _showSuccessDialog();
         _clearForm();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al crear el servicio: Código ${response.statusCode}')),
+        _showErrorSnackbar(
+          'Error al crear el servicio: ${response.statusCode}',
         );
       }
     } on DioException catch (dioError) {
-      print("Error de Dio: ${dioError.response?.data ?? dioError.message}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error de red: ${dioError.response?.data ?? dioError.message}'),
-        ),
-      );
+      final errorMessage =
+          dioError.response?.data?['message'] ?? dioError.message;
+      _showErrorSnackbar('Error: $errorMessage');
     } catch (e) {
-      print("Error inesperado: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error inesperado: ${e.toString()}'),
-        ),
-      );
+      _showErrorSnackbar('Error inesperado: ${e.toString()}');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
-}
 
-  Future<String> _uploadImage(File image) async {
-    String fileName = image.path.split('/').last;
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red[700],
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
 
-    FormData formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(image.path, filename: fileName),
-    });
-
-    final response = await DioClient.dio.post('services', data: formData);
-
-    if (response.statusCode == 200) {
-      return response.data['url'];
-    } else {
-      throw Exception('Failed to upload image');
-    }
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(
+              '¡Servicio creado!',
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  size: 60,
+                  color: Theme.of(context).primaryColor,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Tu servicio se ha publicado exitosamente',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                child: Text(
+                  'Aceptar',
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+                onPressed: () => Navigator.of(ctx).pop(),
+              ),
+            ],
+          ),
+    );
   }
 
   void _clearForm() {
+    _formKey.currentState?.reset();
     _titleController.clear();
     _descriptionController.clear();
     _priceController.clear();
@@ -180,6 +184,12 @@ void _submitForm() async {
       _portfolioImages.clear();
       _selectedCategory = null;
     });
+
+    PrimaryScrollController.of(context)?.animateTo(
+      0,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
@@ -196,233 +206,548 @@ void _submitForm() async {
     final categoryProvider = Provider.of<CategoryProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Crear Nuevo Servicio'), elevation: 0),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Título
-              TextFormField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: 'Título del servicio',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.title),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un título';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-
-              // Descripción
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: 'Descripción',
-                  border: OutlineInputBorder(),
-                  alignLabelWithHint: true,
-                ),
-                maxLines: 4,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa una descripción';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-
-              // Precio y Duración en fila
-              Row(
-                children: [
-                  // Precio
-                  Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      controller: _priceController,
-                      decoration: InputDecoration(
-                        labelText: 'Precio',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.attach_money),
+      appBar: AppBar(
+        title: Text(
+          'Crear Nuevo Servicio',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            onPressed: _showHelpDialog,
+            tooltip: 'Ayuda',
+          ),
+        ],
+      ),
+      body:
+          _isLoading
+              ? _buildLoadingIndicator()
+              : SingleChildScrollView(
+                padding: EdgeInsets.all(20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildHeaderSection(),
+                              SizedBox(height: 24),
+                              _buildTitleField(),
+                              SizedBox(height: 16),
+                              _buildDescriptionField(),
+                              SizedBox(height: 16),
+                              _buildPriceDurationRow(),
+                              SizedBox(height: 16),
+                              _buildCategoryDropdown(categoryProvider),
+                            ],
+                          ),
+                        ),
                       ),
-                      keyboardType: TextInputType.numberWithOptions(
-                        decimal: true,
+                      SizedBox(height: 20),
+                      Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: _buildPortfolioImagesSection(),
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa un precio';
-                        }
-                        if (double.tryParse(value) == null) {
-                          return 'Precio inválido';
-                        }
-                        return null;
-                      },
-                    ),
+                      SizedBox(height: 30),
+                      _buildSubmitButton(),
+                    ],
                   ),
-                  SizedBox(width: 10),
-                  // Duración
-                  Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      controller: _durationController,
-                      decoration: InputDecoration(
-                        labelText: 'Duración (min)',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.timer),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa la duración';
-                        }
-                        if (int.tryParse(value) == null) {
-                          return 'Duración inválida';
-                        }
-                        return null;
-                      },
-                    ),
+                ),
+              ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            strokeWidth: 4,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).primaryColor,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Publicando tu servicio...',
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Por favor no cierres la aplicación',
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Nuevo Servicio',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Completa todos los campos para publicar tu servicio',
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTitleField() {
+    return TextFormField(
+      controller: _titleController,
+      decoration: InputDecoration(
+        labelText: 'Título del servicio',
+        labelStyle: TextStyle(color: Colors.grey[700]),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey[400]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
+          ),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+      ),
+      style: TextStyle(fontSize: 16),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor ingresa un título';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildDescriptionField() {
+    return TextFormField(
+      controller: _descriptionController,
+      decoration: InputDecoration(
+        labelText: 'Descripción detallada',
+        labelStyle: TextStyle(color: Colors.grey[700]),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey[400]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
+          ),
+        ),
+        alignLabelWithHint: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      ),
+      maxLines: 5,
+      minLines: 3,
+      style: TextStyle(fontSize: 16),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor ingresa una descripción';
+        }
+        if (value.length < 50) {
+          return 'La descripción debe tener al menos 50 caracteres';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPriceDurationRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: _priceController,
+            decoration: InputDecoration(
+              labelText: 'Precio (S/)',
+              labelStyle: TextStyle(color: Colors.grey[700]),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.grey[400]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: Theme.of(context).primaryColor,
+                  width: 2,
+                ),
+              ),
+              prefixIcon: Icon(Icons.attach_money, color: Colors.grey[600]),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 18,
+              ),
+            ),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            style: TextStyle(fontSize: 16),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Ingresa un precio';
+              }
+              if (double.tryParse(value) == null) {
+                return 'Precio inválido';
+              }
+              return null;
+            },
+          ),
+        ),
+        SizedBox(width: 16),
+        Expanded(
+          child: TextFormField(
+            controller: _durationController,
+            decoration: InputDecoration(
+              labelText: 'Duración (min)',
+              labelStyle: TextStyle(color: Colors.grey[700]),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.grey[400]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: Theme.of(context).primaryColor,
+                  width: 2,
+                ),
+              ),
+              prefixIcon: Icon(Icons.timer, color: Colors.grey[600]),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 18,
+              ),
+            ),
+            keyboardType: TextInputType.number,
+            style: TextStyle(fontSize: 16),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Ingresa la duración';
+              }
+              if (int.tryParse(value) == null) {
+                return 'Duración inválida';
+              }
+              if (int.parse(value) < 15) {
+                return 'Mínimo 15 minutos';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryDropdown(CategoryProvider categoryProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Categoría del servicio',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 8),
+        DropdownButtonFormField<Category>(
+          value: _selectedCategory,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey[400]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Theme.of(context).primaryColor,
+                width: 2,
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+            filled: true,
+            fillColor: Colors.grey[50],
+          ),
+          isExpanded: true,
+          hint: Text(
+            'Selecciona una categoría',
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+          icon: Icon(
+            Icons.arrow_drop_down,
+            color: Theme.of(context).primaryColor,
+          ),
+          dropdownColor: Colors.white,
+          style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+          items:
+              categoryProvider.categories.map((Category category) {
+                return DropdownMenuItem<Category>(
+                  value: category,
+                  child: Text(
+                    category.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey[800]),
+                  ),
+                );
+              }).toList(),
+          onChanged: (Category? newValue) {
+            setState(() {
+              _selectedCategory = newValue;
+            });
+          },
+          validator: (value) {
+            if (value == null) {
+              return 'Por favor selecciona una categoría';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPortfolioImagesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Portafolio (Máx. 3 imágenes)',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Sube imágenes de calidad que muestren ejemplos de tu trabajo',
+          style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+        ),
+        SizedBox(height: 12),
+        _buildImageGrid(),
+      ],
+    );
+  }
+
+  Widget _buildImageGrid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1,
+      ),
+      itemCount:
+          _portfolioImages.length < 3
+              ? _portfolioImages.length + 1
+              : _portfolioImages.length,
+      itemBuilder: (context, index) {
+        if (index < _portfolioImages.length) {
+          return _buildImageThumbnail(index);
+        } else {
+          return _buildAddImageButton();
+        }
+      },
+    );
+  }
+
+  Widget _buildImageThumbnail(int index) {
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey[300]!),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(
+              _portfolioImages[index],
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+        ),
+        Positioned(
+          top: 4,
+          right: 4,
+          child: GestureDetector(
+            onTap: () => _removeImage(index),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.red[600],
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(4),
+              child: Icon(Icons.close, size: 16, color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddImageButton() {
+    return InkWell(
+      onTap: _pickImage,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).primaryColor.withOpacity(0.3),
+          ),
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).primaryColor.withOpacity(0.05),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add_a_photo,
+              size: 30,
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Agregar',
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return ElevatedButton(
+      child:
+          _isLoading
+              ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+              : Text(
+                'PUBLICAR SERVICIO',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                  color: Colors.white,
+                ),
+              ),
+      onPressed: _isLoading ? null : _submitForm,
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 18),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 3,
+        shadowColor: Theme.of(context).primaryColor.withOpacity(0.4),
+      ),
+    );
+  }
+
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Ayuda para publicar servicios',
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHelpItem(
+                    '1. Proporciona un título claro y descriptivo',
+                  ),
+                  _buildHelpItem('2. Describe detalladamente tu servicio'),
+                  _buildHelpItem('3. Selecciona la categoría más adecuada'),
+                  _buildHelpItem('4. Sube imágenes de calidad de tu trabajo'),
+                  SizedBox(height: 10),
+                  Text(
+                    'Recomendaciones:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  _buildHelpItem('- Usa fotos bien iluminadas'),
+                  _buildHelpItem('- Muestra diferentes ángulos de tu trabajo'),
+                  _buildHelpItem(
+                    '- Incluye detalles que destaquen tu servicio',
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-
-              // Selector de Categoría
-              InputDecorator(
-                decoration: InputDecoration(
-                  labelText: 'Categoría',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.category),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Entendido',
+                  style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<Category>(
-                    value: _selectedCategory,
-                    isExpanded: true,
-                    hint: Text('Selecciona una categoría'),
-                    items:
-                        categoryProvider.categories.map((Category category) {
-                          return DropdownMenuItem<Category>(
-                            value: category,
-                            child: Text(category.name),
-                          );
-                        }).toList(),
-                    onChanged: (Category? newValue) {
-                      setState(() {
-                        _selectedCategory = newValue;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Subida de imágenes
-              Text(
-                'Imágenes del portafolio (Máx. 3)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Sube imágenes que muestren ejemplos de tu trabajo',
-                style: TextStyle(color: Colors.grey),
-              ),
-              SizedBox(height: 10),
-
-              // Preview de imágenes y botón para agregar
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  ..._portfolioImages.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final image = entry.value;
-                    return Stack(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: FileImage(image),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: IconButton(
-                            icon: Icon(Icons.close, color: Colors.white),
-                            onPressed: () => _removeImage(index),
-                            style: IconButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              padding: EdgeInsets.all(4),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                  if (_portfolioImages.length < 3)
-                    GestureDetector(
-                      onTap: _pickImage,
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add_a_photo, size: 30),
-                            SizedBox(height: 5),
-                            Text('Agregar', style: TextStyle(fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              SizedBox(height: 30),
-
-              // Botón de enviar
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submitForm,
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child:
-                    _isLoading
-                        ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                          ),
-                        )
-                        : Text(
-                          'Publicar Servicio',
-                          style: TextStyle(fontSize: 16),
-                        ),
               ),
             ],
           ),
-        ),
+    );
+  }
+
+  Widget _buildHelpItem(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            size: 18,
+            color: Theme.of(context).primaryColor,
+          ),
+          SizedBox(width: 8),
+          Expanded(child: Text(text)),
+        ],
       ),
     );
   }

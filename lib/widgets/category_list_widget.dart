@@ -8,10 +8,13 @@ class CategoryListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final categoryProvider = Provider.of<CategoryProvider>(context);
 
     if (categoryProvider.isLoading) {
-      return const Center(child: CircularProgressIndicator(color: Colors.green,));
+      return Center(
+        child: CircularProgressIndicator(color: theme.primaryColor),
+      );
     }
 
     return SizedBox(
@@ -34,10 +37,19 @@ class CategoryListWidget extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.only(right: 10),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.green[50],
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: theme.primaryColor.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
                     child: ClipOval(
                       child: Image.network(
                         category.image, 
@@ -45,15 +57,27 @@ class CategoryListWidget extends StatelessWidget {
                         height: 60,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.category, color: Colors.green, size: 30);
+                          return Icon(
+                            Icons.category, 
+                            color: theme.primaryColor,
+                            size: 30,
+                          );
                         },
                       ),
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Text(
-                    category.name,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  SizedBox(
+                    width: 70,
+                    child: Text(
+                      category.name,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),

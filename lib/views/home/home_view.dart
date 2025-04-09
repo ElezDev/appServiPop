@@ -14,7 +14,6 @@ import 'package:servipopapp/widgets/provider_grid_widget.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -24,16 +23,14 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin {
   @override
-   bool get wantKeepAlive => true; 
+  bool get wantKeepAlive => true;
+  
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<CategoryProvider>(context, listen: false).fetchCategories();
-      Provider.of<LocationProvider>(
-        context,
-        listen: false,
-      ).getCurrentLocation();
+      Provider.of<LocationProvider>(context, listen: false).getCurrentLocation();
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.isAuthenticated) {
         Provider.of<UserProvider>(context, listen: false).loadUser();
@@ -43,53 +40,45 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
-     super.build(context);
+    super.build(context);
+    final theme = Theme.of(context);
     final userProvider = Provider.of<UserProvider>(context);
     final locationProvider = Provider.of<LocationProvider>(context);
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Image.asset(
-            //   'assets/flags/reino.png', // Tu logo
-            //   height: 30,
-            // ),
             SizedBox(width: 10),
             Text(
               'ServiPop',
-              style: TextStyle(
+              style: theme.textTheme.titleLarge?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
               ),
             ),
           ],
         ),
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.green, Colors.lightGreen],
+              colors: [
+                theme.primaryColor,
+                theme.colorScheme.secondary,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
-            ],
           ),
         ),
-        elevation: 10,
+        elevation: 4,
         actions: [
           IconButton(
-            icon: const Icon(Icons.location_on, color: Colors.white),
+            icon: Icon(Icons.location_on, color: Colors.white),
             onPressed: () {
               locationProvider.getCurrentLocation();
             },
@@ -101,21 +90,19 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.white,
-                backgroundImage:
-                    userProvider.user?.avatar != null
-                        ? CachedNetworkImageProvider(userProvider.user!.avatar!)
-                        : const AssetImage('assets/images/default_profile.png')
-                            as ImageProvider,
-                child:
-                    userProvider.user?.avatar == null
-                        ? const Icon(Icons.person, color: Colors.green)
-                        : null,
+                backgroundImage: userProvider.user?.avatar != null
+                    ? CachedNetworkImageProvider(userProvider.user!.avatar!)
+                    : const AssetImage('assets/images/default_profile.png')
+                        as ImageProvider,
+                child: userProvider.user?.avatar == null
+                    ? Icon(Icons.person, color: theme.primaryColor)
+                    : null,
               ),
             ),
           ),
         ],
       ),
-      drawer: const UserDrawer(), // Usa el nuevo componente de drawer
+      drawer: const UserDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -124,29 +111,24 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.green, Colors.lightGreen],
+                    colors: [
+                      theme.primaryColor,
+                      theme.colorScheme.secondary,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.location_on, color: Colors.white),
-                    const SizedBox(width: 10),
+                    Icon(Icons.location_on, color: Colors.white),
+                    SizedBox(width: 10),
                     Text(
                       'Ubicación: ${locationProvider.currentCity} - ${locationProvider.currentDepartment}',
-                      style: const TextStyle(
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         color: Colors.white,
-                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -157,11 +139,10 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               child: Column(
                 children: AnimationConfiguration.toStaggeredList(
                   duration: const Duration(milliseconds: 500),
-                  childAnimationBuilder:
-                      (widget) => SlideAnimation(
-                        horizontalOffset: 50.0,
-                        child: FadeInAnimation(child: widget),
-                      ),
+                  childAnimationBuilder: (widget) => SlideAnimation(
+                    horizontalOffset: 50.0,
+                    child: FadeInAnimation(child: widget),
+                  ),
                   children: [
                     const CarouselWidget(),
                     const CategoryListWidget(),

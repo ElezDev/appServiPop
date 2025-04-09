@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:servipopapp/views/favorites/favorites_view.dart';
 import 'package:servipopapp/views/home/home_view.dart';
@@ -19,7 +18,7 @@ class _MainAppState extends State<MainApp> {
   final List<Widget> _screens = [
     const HomeView(),
     const SearchView(),
-     FavoritesView(),
+    FavoritesView(),
     ProfileView(),
   ];
 
@@ -31,18 +30,19 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); 
+    final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26,
+              color: theme.shadowColor.withOpacity(0.2),
               blurRadius: 10,
-              offset: Offset(0, -5),
+              offset: const Offset(0, -5),
             ),
           ],
         ),
@@ -52,26 +52,38 @@ class _MainAppState extends State<MainApp> {
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.green,
-            unselectedItemColor: Colors.grey[600],
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            backgroundColor: theme.colorScheme.surface,
+            selectedItemColor: theme.primaryColor,
+            unselectedItemColor: theme.unselectedWidgetColor,
+            selectedLabelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: theme.textTheme.bodySmall?.fontSize,
+            ),
+            unselectedLabelStyle: TextStyle(
+              fontSize: theme.textTheme.bodySmall?.fontSize,
+            ),
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
             items: [
               BottomNavigationBarItem(
-                icon: const Icon(Icons.home),
+                icon: const Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home, color: theme.primaryColor),
                 label: localizations.home,
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.search),
-                label: localizations.search, 
+                icon: const Icon(Icons.search_outlined),
+                activeIcon: Icon(Icons.search, color: theme.primaryColor),
+                label: localizations.search,
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.favorite),
+                icon: const Icon(Icons.favorite_outline),
+                activeIcon: Icon(Icons.favorite, color: theme.primaryColor),
                 label: localizations.favorites,
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.person),
-                label: localizations.profile, 
+                icon: const Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person, color: theme.primaryColor),
+                label: localizations.profile,
               ),
             ],
           ),

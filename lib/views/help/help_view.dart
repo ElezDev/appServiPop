@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:servipopapp/localizations.dart'; // Importa AppLocalizations
-
+import 'package:servipopapp/localizations.dart';
 
 class HelpView extends StatelessWidget {
   const HelpView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
+    final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          localizations.helpTitle, // Título traducido
-          style: const TextStyle(
+          localizations.helpTitle,
+          style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
             letterSpacing: 1.2,
           ),
         ),
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.green, Colors.lightGreen],
+              colors: [
+                theme.primaryColor,
+                theme.colorScheme.secondary,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
-        elevation: 10,
+        elevation: 4,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey[50]!],
+            colors: [
+              theme.colorScheme.background,
+              theme.colorScheme.surface,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -51,51 +55,41 @@ class HelpView extends StatelessWidget {
                     duration: const Duration(milliseconds: 500),
                     childAnimationBuilder: (widget) => SlideAnimation(
                       horizontalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: widget,
-                      ),
+                      child: FadeInAnimation(child: widget),
                     ),
                     children: [
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.help_outline,
-                        title: localizations.howToUse, // Título traducido
-                        description: localizations.howToUseDescription, // Descripción traducida
-                        onTap: () {
-                          // Navegar a una vista detallada
-                        },
+                        title: localizations.howToUse,
+                        description: localizations.howToUseDescription,
                       ),
                       const SizedBox(height: 16),
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.payment,
-                        title: localizations.paymentMethods, // Título traducido
-                        description: localizations.paymentMethodsDescription, // Descripción traducida
-                        onTap: () {
-                          // Navegar a una vista detallada
-                        },
+                        title: localizations.paymentMethods,
+                        description: localizations.paymentMethodsDescription,
                       ),
                       const SizedBox(height: 16),
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.security,
-                        title: localizations.securityAndPrivacy, // Título traducido
-                        description: localizations.securityAndPrivacyDescription, // Descripción traducida
-                        onTap: () {
-                          // Navegar a una vista detallada
-                        },
+                        title: localizations.securityAndPrivacy,
+                        description: localizations.securityAndPrivacyDescription,
                       ),
                       const SizedBox(height: 16),
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.contact_support,
-                        title: localizations.contact, // Título traducido
-                        description: localizations.contactDescription, // Descripción traducida
-                        onTap: () {
-                          // Navegar a una vista de contacto
-                        },
+                        title: localizations.contact,
+                        description: localizations.contactDescription,
                       ),
                     ],
                   ),
                 ),
               ),
-              _buildFooter(localizations), // Footer con traducciones
+              _buildFooter(context, localizations),
             ],
           ),
         ),
@@ -104,24 +98,39 @@ class HelpView extends StatelessWidget {
   }
 
   Widget _buildHelpCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String description,
-    required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+    
     return Card(
-      elevation: 5,
+      elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          // Navegar a una vista detallada
+        },
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(icon, size: 40, color: Colors.green),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon, 
+                  size: 32,
+                  color: theme.primaryColor,
+                ),
+              ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -129,24 +138,26 @@ class HelpView extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.primaryColor,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green[800],
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       description,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, color: Colors.green),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: theme.primaryColor,
+              ),
             ],
           ),
         ),
@@ -154,33 +165,33 @@ class HelpView extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter(AppLocalizations localizations) {
+  Widget _buildFooter(BuildContext context, AppLocalizations localizations) {
+    final theme = Theme.of(context);
+    
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
+        color: theme.primaryColor.withOpacity(0.05),
         border: Border(
-          top: BorderSide(color: Colors.green.withOpacity(0.2)),
+          top: BorderSide(
+            color: theme.dividerColor,
+            width: 1,
+          ),
         ),
       ),
       child: Center(
         child: Column(
           children: [
             Text(
-              localizations.developedBy, // Texto traducido
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
+              localizations.developedBy,
+              style: theme.textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 4),
             Text(
-              localizations.copyright, // Texto traducido
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              localizations.copyright,
+              style: theme.textTheme.bodySmall,
             ),
           ],
         ),

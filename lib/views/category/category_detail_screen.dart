@@ -39,117 +39,123 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
+        backgroundColor: Theme.of(context).primaryColor,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.all(16),
-      ),
+      )
     );
+
   }
 
   void _bookService(Service service) {
+    final theme = Theme.of(context);
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.8,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 60,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.dividerColor,
+                  borderRadius: BorderRadius.circular(2),
+              ),
+              )
             ),
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 60,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Reservar servicio',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      service.portfolioImages.isNotEmpty
-                          ? service.portfolioImages.first.imageUrl
-                          : 'https://via.placeholder.com/150',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  title: Text(
-                    service.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    '\$${service.price.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _buildFormField(
-                  icon: Icons.calendar_today,
-                  label: 'Fecha',
-                  hint: 'Selecciona una fecha',
-                ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  icon: Icons.access_time,
-                  label: 'Hora',
-                  hint: 'Selecciona una hora',
-                ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  icon: Icons.note,
-                  label: 'Notas adicionales',
-                  hint: 'Añade detalles adicionales',
-                  maxLines: 3,
-                ),
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _showConfirmationDialog(service);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'CONFIRMAR RESERVA',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 24),
+            Text(
+              'Reservar servicio',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            const SizedBox(height: 16),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  service.portfolioImages.isNotEmpty
+                      ? service.portfolioImages.first.imageUrl
+                      : 'https://via.placeholder.com/150',
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              title: Text(
+                service.title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                '\$${service.price.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: theme.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildFormField(
+              icon: Icons.calendar_today,
+              label: 'Fecha',
+              hint: 'Selecciona una fecha',
+              theme: theme,
+            ),
+            const SizedBox(height: 16),
+            _buildFormField(
+              icon: Icons.access_time,
+              label: 'Hora',
+              hint: 'Selecciona una hora',
+              theme: theme,
+            ),
+            const SizedBox(height: 16),
+            _buildFormField(
+              icon: Icons.note,
+              label: 'Notas adicionales',
+              hint: 'Añade detalles adicionales',
+              maxLines: 3,
+              theme: theme,
+            ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _showConfirmationDialog(service);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                ),
+                child: Text(
+                  'CONFIRMAR RESERVA',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      )
     );
   }
 
@@ -158,29 +164,30 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
     required String label,
     required String hint,
     int maxLines = 1,
+    required ThemeData theme,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(
-            color: Colors.grey[600],
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8),
         TextField(
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.grey[500]),
+            prefixIcon: Icon(icon, color: theme.iconTheme.color?.withOpacity(0.6)),
             hintText: hint,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(color: theme.dividerColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(color: theme.dividerColor),
             ),
             contentPadding: const EdgeInsets.symmetric(
               vertical: 12,
@@ -194,106 +201,125 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   }
 
   void _showConfirmationDialog(Service service) {
+    final theme = Theme.of(context);
+    
     showDialog(
       context: context,
-      builder:
-          (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.check,
-                      size: 40,
-                      color: Colors.green[700],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    '¡Reserva confirmada!',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Tu reserva para ${service.title} ha sido confirmada.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'ENTENDIDO',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.check,
+                  size: 40,
+                  color: theme.primaryColor,
+                ),
               ),
-            ),
+              const SizedBox(height: 24),
+              Text(
+                '¡Reserva confirmada!',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Tu reserva para ${service.title} ha sido confirmada.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(
+                    'ENTENDIDO',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.category.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: false,
         elevation: 0,
-        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: theme.iconTheme.color),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: FutureBuilder<List<Service>>(
         future: _servicesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
+            return Center(
+              child: CircularProgressIndicator(
+                color: theme.primaryColor,
+                strokeWidth: 2,
+              ),
             );
           } else if (snapshot.hasError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: theme.colorScheme.error,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'Error al cargar servicios',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: theme.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Por favor, inténtalo de nuevo más tarde',
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -314,19 +340,21 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/emty.jpg',
+                    'assets/images/empty.jpg',
                     width: 200,
                     height: 200,
                   ),
                   const SizedBox(height: 24),
                   Text(
                     'No hay servicios disponibles',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: theme.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Prueba con otra categoría',
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                    ),
                   ),
                 ],
               ),
@@ -339,7 +367,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
             separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final service = snapshot.data![index];
-              return _buildServiceCard(service);
+              return _buildServiceCard(service, theme);
             },
           );
         },
@@ -347,18 +375,17 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
     );
   }
 
-  Widget _buildServiceCard(Service service) {
-    final firstImage =
-        service.portfolioImages.isNotEmpty
-            ? service.portfolioImages.first.imageUrl
-            : 'https://via.placeholder.com/150';
+  Widget _buildServiceCard(Service service, ThemeData theme) {
+    final firstImage = service.portfolioImages.isNotEmpty
+        ? service.portfolioImages.first.imageUrl
+        : 'https://via.placeholder.com/150';
 
     return Ink(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: theme.shadowColor.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -367,7 +394,6 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Imagen del servicio con overlay de favoritos
           Stack(
             children: [
               ClipRRect(
@@ -377,7 +403,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                 child: Container(
                   height: 200,
                   width: double.infinity,
-                  color: Colors.grey[200],
+                  color: theme.cardColor,
                   child: Image.network(
                     firstImage,
                     fit: BoxFit.cover,
@@ -385,25 +411,24 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                       if (loadingProgress == null) return child;
                       return Center(
                         child: CircularProgressIndicator(
-                          value:
-                              loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
+                          color: theme.primaryColor,
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
                         ),
                       );
                     },
-                    errorBuilder:
-                        (context, error, stackTrace) => Container(
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: Icon(
-                              Icons.image_not_supported,
-                              size: 50,
-                              color: Colors.grey,
-                            ),
-                          ),
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: theme.cardColor,
+                      child: Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 50,
+                          color: theme.iconTheme.color,
                         ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -417,14 +442,11 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                     duration: const Duration(milliseconds: 300),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color:
-                          (_favorites[service.id] ?? false)
-                              ? Colors.white
-                              : Colors.white.withOpacity(0.9),
+                      color: theme.cardColor,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: theme.shadowColor.withOpacity(0.1),
                           blurRadius: 6,
                           offset: const Offset(0, 3),
                         ),
@@ -437,10 +459,9 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                             ? Icons.favorite
                             : Icons.favorite_border,
                         key: ValueKey<bool>(_favorites[service.id] ?? false),
-                        color:
-                            (_favorites[service.id] ?? false)
-                                ? Colors.red
-                                : Colors.grey[700],
+                        color: _favorites[service.id] ?? false
+                            ? Colors.red
+                            : theme.iconTheme.color,
                         size: 24,
                       ),
                     ),
@@ -453,24 +474,23 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.cardColor,
               borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(20),
               ),
-              border: Border.all(color: Colors.grey[200]!, width: 1),
+              border: Border.all(color: Colors.grey.shade300, width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Título y precio
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Text(
                         service.title,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 2,
@@ -485,18 +505,18 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Theme.of(context).primaryColor,
-                            Theme.of(context).primaryColor.withOpacity(0.8),
+                            theme.primaryColor,
+                            theme.primaryColor.withOpacity(0.8),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         '\$${service.price.toStringAsFixed(2)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                         ),
                       ),
                     ),
@@ -513,10 +533,10 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                       height: 36,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: theme.cardColor, width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: theme.shadowColor.withOpacity(0.1),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -530,31 +550,29 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder:
-                                    (context) => ProviderProfileView(
-                                      provider: service.serviceProvider,
-                                    ),
+                                builder: (context) => ProviderProfileView(
+                                  provider: service.serviceProvider,
+                                ),
                               ),
                             );
                           },
-                          splashColor: Colors.grey.withOpacity(0.3),
+                          splashColor: theme.splashColor,
                           highlightColor: Colors.transparent,
                           child: Container(
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
+                              border: Border.all(color: theme.cardColor, width: 2),
                             ),
                             child: ClipOval(
                               child: Image.network(
                                 service.serviceProvider.user.avatar,
                                 fit: BoxFit.cover,
-                                errorBuilder:
-                                    (context, error, stackTrace) => const Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
-                                    ),
+                                errorBuilder: (context, error, stackTrace) => Icon(
+                                  Icons.person,
+                                  color: theme.iconTheme.color,
+                                ),
                               ),
                             ),
                           ),
@@ -568,7 +586,9 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                         children: [
                           Text(
                             '${service.serviceProvider.user.name} ${service.serviceProvider.user.lastname}',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Row(
@@ -576,7 +596,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                               Icon(
                                 Icons.location_on,
                                 size: 14,
-                                color: Colors.grey[500],
+                                color: theme.iconTheme.color?.withOpacity(0.6),
                               ),
                               const SizedBox(width: 4),
                               Expanded(
@@ -584,9 +604,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                                   service.serviceProvider.address
                                       .split(',')
                                       .first,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -634,7 +653,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                   service.description.isNotEmpty
                       ? service.description
                       : 'Este servicio no tiene descripción detallada',
-                  style: TextStyle(color: Colors.grey[700]),
+                  style: theme.textTheme.bodyMedium,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -647,24 +666,23 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                   child: ElevatedButton(
                     onPressed: () => _bookService(service),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: theme.primaryColor,
+                      foregroundColor: theme.colorScheme.onPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 0,
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.calendar_today, size: 20),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           'Reservar ahora',
-                          style: TextStyle(
+                          style: theme.textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
                           ),
                         ),
                       ],

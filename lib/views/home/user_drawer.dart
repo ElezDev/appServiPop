@@ -11,6 +11,7 @@ class UserDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
@@ -22,26 +23,34 @@ class UserDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountName: Text(
               userProvider.user?.name ?? 'Usuario',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             accountEmail: Text(
               userProvider.user?.email ?? 'correo@ejemplo.com',
-              style: const TextStyle(fontSize: 14),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withOpacity(0.9),
+              ),
             ),
             currentAccountPicture: CircleAvatar(
               radius: 30,
               backgroundColor: Colors.white,
               backgroundImage: userProvider.user?.avatar != null
                   ? CachedNetworkImageProvider(userProvider.user!.avatar!)
-                  : const AssetImage('assets/imasges/default_profile.jpg')
+                  : const AssetImage('assets/images/default_profile.png')
                       as ImageProvider,
               child: userProvider.user?.avatar == null
-                  ? const Icon(Icons.person, size: 30, color: Colors.green)
+                  ? Icon(Icons.person, size: 30, color: theme.primaryColor)
                   : null,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.green, Colors.lightGreen],
+                colors: [
+                  theme.primaryColor,
+                  theme.colorScheme.secondary,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -52,13 +61,17 @@ class UserDrawer extends StatelessWidget {
               future: storageService.getUserRole(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: theme.primaryColor,
+                    ),
+                  );
                 }
                 
                 final userRole = snapshot.data;
                 return ListView(
                   padding: EdgeInsets.zero,
-                  children: _buildDrawerItems(context, userRole),
+                  children: _buildDrawerItems(context, userRole, theme),
                 );
               },
             ),
@@ -67,7 +80,10 @@ class UserDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: Colors.grey[300]!, width: 1.0),
+                top: BorderSide(
+                  color: theme.dividerColor,
+                  width: 1.0,
+                ),
               ),
             ),
             child: Row(
@@ -105,57 +121,64 @@ class UserDrawer extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildDrawerItems(BuildContext context, String? userRole) {
+  List<Widget> _buildDrawerItems(BuildContext context, String? userRole, ThemeData theme) {
     final commonItems = [
-      ListTile(
-        leading: const Icon(Icons.person, color: Colors.green),
-        title: const Text('Perfil'),
-        onTap: () {
-          Navigator.pop(context);
-        },
+      _buildDrawerItem(
+        context: context,
+        icon: Icons.person,
+        title: 'Perfil',
+        theme: theme,
+        onTap: () => Navigator.pop(context),
       ),
-      ListTile(
-        leading: const Icon(Icons.star, color: Colors.green),
-        title: const Text('Raiting'),
+      _buildDrawerItem(
+        context: context,
+        icon: Icons.star,
+        title: 'Rating',
+        theme: theme,
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/rating');
-        } 
-      ),
-      ListTile(
-        leading: const Icon(Icons.settings, color: Colors.green),
-        title: const Text('Configuración'),
-        onTap: () {
-          Navigator.pop(context);
         },
       ),
-      ListTile(
-        leading: const Icon(Icons.help_outline, color: Colors.green),
-        title: const Text('Ayuda'),
+      _buildDrawerItem(
+        context: context,
+        icon: Icons.settings,
+        title: 'Configuración',
+        theme: theme,
+        onTap: () => Navigator.pop(context),
+      ),
+      _buildDrawerItem(
+        context: context,
+        icon: Icons.help_outline,
+        title: 'Ayuda',
+        theme: theme,
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/help');
         },
       ),
-      const Divider(),
+      Divider(color: theme.dividerColor),
     ];
 
     final roleSpecificItems = <Widget>[];
     switch (userRole) {
       case 'serviceProvider':
         roleSpecificItems.addAll([
-          ListTile(
-            leading: const Icon(Icons.shop_sharp, color: Colors.green),
-            title: const Text('Publicar Servicio'),
+          _buildDrawerItem(
+            context: context,
+            icon: Icons.work,
+            title: 'Publicar Servicio',
+            theme: theme,
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/service-form');
-            },  
-           
+            },
           ),
-          ListTile(
-            leading: const Icon(Icons.people, color: Colors.green),
-            title: const Text('Gestión de Usuarios'),
+          _buildDrawerItem(
+            context: context,
+            icon: Icons.people,
+            title: 'Gestión de Usuarios',
+            theme: theme,
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/user-management');
@@ -165,17 +188,21 @@ class UserDrawer extends StatelessWidget {
         break;
       case 'user':
         roleSpecificItems.addAll([
-          ListTile(
-            leading: const Icon(Icons.store, color: Colors.green),
-            title: const Text('Mi Tienda'),
+          _buildDrawerItem(
+            context: context,
+            icon: Icons.store,
+            title: 'Mi Tienda',
+            theme: theme,
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/my-store');
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.analytics, color: Colors.green),
-            title: const Text('Estadísticas'),
+          _buildDrawerItem(
+            context: context,
+            icon: Icons.analytics,
+            title: 'Estadísticas',
+            theme: theme,
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/stats');
@@ -185,17 +212,21 @@ class UserDrawer extends StatelessWidget {
         break;
       case 'customer':
         roleSpecificItems.addAll([
-          ListTile(
-            leading: const Icon(Icons.shopping_bag, color: Colors.green),
-            title: const Text('Mis Compras'),
+          _buildDrawerItem(
+            context: context,
+            icon: Icons.shopping_bag,
+            title: 'Mis Compras',
+            theme: theme,
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/my-orders');
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.favorite, color: Colors.green),
-            title: const Text('Favoritos'),
+          _buildDrawerItem(
+            context: context,
+            icon: Icons.favorite,
+            title: 'Favoritos',
+            theme: theme,
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/favorites');
@@ -208,9 +239,11 @@ class UserDrawer extends StatelessWidget {
     return [
       ...commonItems,
       ...roleSpecificItems,
-      ListTile(
-        leading: const Icon(Icons.logout, color: Colors.green),
-        title: const Text('Cerrar sesión'),
+      _buildDrawerItem(
+        context: context,
+        icon: Icons.logout,
+        title: 'Cerrar sesión',
+        theme: theme,
         onTap: () async {
           final authProvider = Provider.of<AuthProvider>(context, listen: false);
           await authProvider.logout();
@@ -218,5 +251,26 @@ class UserDrawer extends StatelessWidget {
         },
       ),
     ];
+  }
+
+  Widget _buildDrawerItem({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required ThemeData theme,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: theme.primaryColor),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge?.copyWith(
+          color: theme.textTheme.bodyLarge?.color?.withOpacity(0.9),
+        ),
+      ),
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      minLeadingWidth: 24,
+    );
   }
 }
