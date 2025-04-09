@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:servipopapp/core/theme_provider.dart';
 import 'package:servipopapp/services/service_provider_provider.dart';
 import 'package:servipopapp/services/user_service.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
@@ -20,6 +21,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'core/styles/app_theme.dart';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+// ... otros imports ...
+
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -32,6 +37,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => ServiceProviderProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()), 
         ChangeNotifierProvider(
           create: (_) => UserProvider(userService: UserService()),
         ),
@@ -46,51 +52,49 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
-        Future.delayed(const Duration(seconds: 2), () {
-          FlutterNativeSplash.remove();
-        });
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Servicios Domésticos',
-          theme: appTheme.copyWith(
-            platform: TargetPlatform.android, 
-          ),
-          darkTheme: _buildDarkTheme(), 
-          locale: languageProvider.locale,
-          localizationsDelegates: const [
-            AppLocalizationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', 'US'), 
-            Locale('es', 'ES'),
-          ],
-          routes: {
-            '/': (context) => const SplashScreen(),
-            '/login': (context) => const LoginView(),
-            '/home': (context) => const MainApp(),
-            '/register': (context) => const RegisterView(),
-            '/forgot-password': (context) => ForgotPasswordView(),
-            '/help': (context) => const HelpView(),
-            '/service-form': (context) => CreateServiceScreen(),
-            '/rating': (context) => const CalificationsView(),
-          },
-        );
+    Future.delayed(const Duration(seconds: 2), () {
+      FlutterNativeSplash.remove();
+    });
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Servicios Domésticos',
+      theme: appTheme, 
+      darkTheme: _buildDarkTheme(),
+      themeMode: themeProvider.themeMode,
+      locale: languageProvider.locale,
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+      ],
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/login': (context) => const LoginView(),
+        '/home': (context) => const MainApp(),
+        '/register': (context) => const RegisterView(),
+        '/forgot-password': (context) => ForgotPasswordView(),
+        '/help': (context) => const HelpView(),
+        '/service-form': (context) => CreateServiceScreen(),
+        '/rating': (context) => const CalificationsView(),
       },
     );
   }
 
   ThemeData _buildDarkTheme() {
     return ThemeData.dark().copyWith(
-      primaryColor: Color(0xFF81C784),
-      colorScheme: ColorScheme.dark(
+      primaryColor: const Color(0xFF81C784),
+      colorScheme: const ColorScheme.dark(
         primary: Color(0xFF81C784),
-        secondary:  Color(0xff00C535),
+        secondary: Color(0xFF00C535),
       ),
       appBarTheme: AppBarTheme(
         color: Colors.grey[900],

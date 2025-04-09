@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:servipopapp/core/theme_provider.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
@@ -15,6 +16,7 @@ class UserDrawer extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false); // Obtener el ThemeProvider
     final storageService = StorageService();
 
     return Drawer(
@@ -86,32 +88,60 @@ class UserDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Column(
               children: [
-                IconButton(
-                  icon: Image.asset(
-                    'assets/flags/reino.png', 
-                    width: 32,
-                    height: 32,
+                // Botón para cambiar tema
+                ListTile(
+                  leading: Icon(
+                    themeProvider.themeMode == ThemeMode.dark
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                    color: theme.primaryColor,
                   ),
-                  onPressed: () {
-                    languageProvider.setLocale(const Locale('en', ''));
-                    Navigator.pop(context); 
-                  },
-                  tooltip: 'Cambiar a inglés',
-                ),
-                IconButton(
-                  icon: Image.asset(
-                    'assets/flags/espana.png', 
-                    width: 32,
-                    height: 32,
+                  title: Text(
+                    themeProvider.themeMode == ThemeMode.dark
+                        ? 'Modo claro'
+                        : 'Modo oscuro',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.textTheme.bodyLarge?.color?.withOpacity(0.9),
+                    ),
                   ),
-                  onPressed: () {
-                    languageProvider.setLocale(const Locale('es', ''));
+                  onTap: () {
+                    themeProvider.toggleTheme();
                     Navigator.pop(context);
                   },
-                  tooltip: 'Cambiar a español',
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minLeadingWidth: 24,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Image.asset(
+                        'assets/flags/reino.png', 
+                        width: 32,
+                        height: 32,
+                      ),
+                      onPressed: () {
+                        languageProvider.setLocale(const Locale('en', ''));
+                        Navigator.pop(context); 
+                      },
+                      tooltip: 'Cambiar a inglés',
+                    ),
+                    IconButton(
+                      icon: Image.asset(
+                        'assets/flags/espana.png', 
+                        width: 32,
+                        height: 32,
+                      ),
+                      onPressed: () {
+                        languageProvider.setLocale(const Locale('es', ''));
+                        Navigator.pop(context);
+                      },
+                      tooltip: 'Cambiar a español',
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -120,6 +150,7 @@ class UserDrawer extends StatelessWidget {
       ),
     );
   }
+
 
   List<Widget> _buildDrawerItems(BuildContext context, String? userRole, ThemeData theme) {
     final commonItems = [
