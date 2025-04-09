@@ -394,82 +394,118 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-                child: Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: theme.cardColor,
-                  child: Image.network(
-                    firstImage,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: theme.primaryColor,
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: theme.cardColor,
-                      child: Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          size: 50,
-                          color: theme.iconTheme.color,
-                        ),
+// Reemplaza el Stack actual con este widget
+ClipRRect(
+  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+  child: Container(
+    height: 200,
+    width: double.infinity,
+    color: theme.cardColor,
+    child: Stack(
+      children: [
+        // Carrusel de imágenes
+        GestureDetector(
+          onTap: () => _openImageGallery(service, theme),
+          child: PageView.builder(
+            itemCount: service.portfolioImages.length,
+            itemBuilder: (context, index) {
+              return Hero(
+                tag: 'service-${service.id}-image-$index',
+                child: Image.network(
+                  service.portfolioImages[index].imageUrl,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: theme.primaryColor,
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
                       ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 16,
-                right: 16,
-                child: InkWell(
-                  onTap: () => _toggleFavorite(service.id),
-                  borderRadius: BorderRadius.circular(20),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: theme.shadowColor.withOpacity(0.1),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: theme.cardColor,
+                    child: Center(
                       child: Icon(
-                        _favorites[service.id] ?? false
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        key: ValueKey<bool>(_favorites[service.id] ?? false),
-                        color: _favorites[service.id] ?? false
-                            ? Colors.red
-                            : theme.iconTheme.color,
-                        size: 24,
+                        Icons.image_not_supported,
+                        size: 50,
+                        color: theme.iconTheme.color,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
+        ),
+        
+        // Indicadores del carrusel (solo si hay más de 1 imagen)
+        if (service.portfolioImages.length > 1)
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                service.portfolioImages.length,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        
+        // Botón de favoritos (se mantiene igual)
+        Positioned(
+          top: 16,
+          right: 16,
+          child: InkWell(
+            onTap: () => _toggleFavorite(service.id),
+            borderRadius: BorderRadius.circular(20),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.shadowColor.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  _favorites[service.id] ?? false
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  key: ValueKey<bool>(_favorites[service.id] ?? false),
+                  color: _favorites[service.id] ?? false
+                      ? Colors.red
+                      : theme.iconTheme.color,
+                  size: 24,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+),
 
           Container(
             padding: const EdgeInsets.all(20),
@@ -696,4 +732,93 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
       ),
     );
   }
+  void _openImageGallery(Service service, ThemeData theme) {
+  if (service.portfolioImages.isEmpty) return;
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return GestureDetector(
+        onTap: () => Navigator.pop(context),
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.9,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.background,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(24),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Barra superior
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.close, color: theme.iconTheme.color),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Text(
+                      'Galería de imágenes',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    const SizedBox(width: 48), 
+                  ],
+                ),
+              ),
+              
+              // Galería completa
+              Expanded(
+                child: PageView.builder(
+                  itemCount: service.portfolioImages.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Hero(
+                        tag: 'service-${service.id}-image-$index',
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            service.portfolioImages[index].imageUrl,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              
+              // Indicadores
+              if (service.portfolioImages.length > 1)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      service.portfolioImages.length,
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: theme.primaryColor.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 }
