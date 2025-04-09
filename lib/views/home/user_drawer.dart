@@ -33,7 +33,7 @@ class UserDrawer extends StatelessWidget {
               backgroundColor: Colors.white,
               backgroundImage: userProvider.user?.avatar != null
                   ? CachedNetworkImageProvider(userProvider.user!.avatar!)
-                  : const AssetImage('assets/images/default_profile.jpg')
+                  : const AssetImage('assets/imasges/default_profile.jpg')
                       as ImageProvider,
               child: userProvider.user?.avatar == null
                   ? const Icon(Icons.person, size: 30, color: Colors.green)
@@ -113,6 +113,14 @@ class UserDrawer extends StatelessWidget {
         onTap: () {
           Navigator.pop(context);
         },
+      ),
+      ListTile(
+        leading: const Icon(Icons.star, color: Colors.green),
+        title: const Text('Raiting'),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/rating');
+        } 
       ),
       ListTile(
         leading: const Icon(Icons.settings, color: Colors.green),

@@ -61,14 +61,14 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
       itemBuilder: (context, index) {
         final provider = providers[index];
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProviderProfileView(provider: provider),
-              ),
-            );
-          },
+          // onTap: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => ProviderProfileView(provider: provider),
+          //     ),
+          //   );
+          // },
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(

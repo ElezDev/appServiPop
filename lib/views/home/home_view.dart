@@ -14,6 +14,7 @@ import 'package:servipopapp/widgets/provider_grid_widget.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 

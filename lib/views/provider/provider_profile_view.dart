@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart'; // Para abrir la aplicación de teléfono
+import 'package:servipopapp/models/service_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProviderProfileView extends StatelessWidget {
-  final Map<String, dynamic> provider;
+  // final Map<String, dynamic> provider;
+    final ServiceProvider provider;
 
   const ProviderProfileView({super.key, required this.provider});
 
-  // Método para abrir el marcador telefónico con el número prellenado
-
-   void _openPhoneDialer(String phoneNumber, BuildContext context) async {
+  void _openPhoneDialer(String phoneNumber, BuildContext context) async {
     final Uri phoneUri = Uri.parse('tel:$phoneNumber');
 
     if (await canLaunchUrl(phoneUri)) {
@@ -20,208 +20,347 @@ class ProviderProfileView extends StatelessWidget {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(provider['name']),
-        backgroundColor: Colors.green,
+        title: Text(provider.user.name, style: const TextStyle(color: Colors.black)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sección de imagen
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.network(
-                provider['image'],
-                fit: BoxFit.cover,
-                height: 200,
-                width: double.infinity,
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Nombre y calificación en la misma fila
-            Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .spaceBetween, // Alinea los elementos a los extremos
+            Stack(
               children: [
-                // Nombre del proveedor
-                Text(
-                  provider['name'],
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green[900],
+                Container(
+                  height: 280,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(provider.user.avatar),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                // Calificación
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 20),
-                    const SizedBox(width: 5),
-                    Text(
-                      provider['rating'].toString(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey[700],
-                      ),
+                Container(
+                  height: 280,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.6),
+                        Colors.black.withOpacity(0.1),
+                      ],
                     ),
-                  ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        provider.user.name,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        provider.serviceType,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-
-            // Profesión
-            Text(
-              provider['profession'],
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            const SizedBox(height: 20),
-
-            // Sección de descripción
-            Text(
-              'Descripción:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.green[900],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              provider['description'],
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Botón de contacto con número quemado
-            // Botón de contacto con número quemado
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  _openPhoneDialer('3126285281', context);
-                },
-                icon: const Icon(Icons.phone, color: Colors.white),
-                label: const Text(
-                  'Contactar',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Rating y ubicación
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 18),
+                            const SizedBox(width: 5),
+                            Text(
+                              provider.rating.toString(),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Icon(Icons.location_on, color: Colors.grey, size: 18),
+                      const SizedBox(width: 5),
+                      Text(
+                        provider.address, // Puedes agregar este campo a tu provider
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Color de fondo
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 30, vertical: 15), // Padding
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10), // Bordes redondeados
+                  
+                  const SizedBox(height: 25),
+                  
+                  // Sección "Sobre mí"
+                  const Text(
+                    'Sobre mí',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
-                  elevation: 5, // Sombra del botón
-                ),
+                  const SizedBox(height: 10),
+                  Text(
+                    provider.description,
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  // Sección de habilidades (opcional)
+                  const Text(
+                    'Habilidades',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _buildSkillChip("Profesionalismo"),
+                      _buildSkillChip("Puntualidad"),
+                      _buildSkillChip("Calidad"),
+                      _buildSkillChip("Atención al cliente"),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  // Botón de contacto
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => _openPhoneDialer(provider.user.phone, context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[800],
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                        shadowColor: Colors.green.withOpacity(0.4),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.phone, color: Colors.white),
+                          SizedBox(width: 10),
+                          Text(
+                            'Contactar ahora',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  // Sección de reseñas
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Reseñas',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Ver todas',
+                          style: TextStyle(
+                            color: Colors.green[800],
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ..._buildReviewsList(),
+                ],
               ),
             ),
-            const SizedBox(height: 30),
-
-            // Sección de reseñas
-            Text(
-              'Reseñas:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.green[900],
-              ),
-            ),
-            const SizedBox(height: 10),
-            ..._buildReviewsList(), // Lista de reseñas
           ],
         ),
       ),
     );
   }
 
-  // Método para construir la lista de reseñas (diseño minimalista)
+  Widget _buildSkillChip(String skill) {
+    return Chip(
+      label: Text(skill),
+      backgroundColor: Colors.green[50],
+      labelStyle: TextStyle(color: Colors.green[800]),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: Colors.green[100]!),
+      ),
+    );
+  }
+
   List<Widget> _buildReviewsList() {
-    // Datos de ejemplo para las reseñas
     final List<Map<String, dynamic>> reviews = [
       {
         'user': 'Juan Pérez',
-        'comment': 'Excelente servicio, muy profesional y puntual.',
+        'comment': 'Excelente servicio, muy profesional y puntual. Recomiendo ampliamente sus servicios.',
         'rating': 5.0,
+        'date': 'Hace 2 semanas',
+        'avatar': 'https://randomuser.me/api/portraits/men/1.jpg',
       },
       {
         'user': 'María Gómez',
-        'comment': 'Muy satisfecha con el trabajo realizado.',
+        'comment': 'Muy satisfecha con el trabajo realizado. Cumplió con todas mis expectativas.',
         'rating': 4.5,
+        'date': 'Hace 1 mes',
+        'avatar': 'https://randomuser.me/api/portraits/women/1.jpg',
       },
       {
         'user': 'Carlos López',
-        'comment': 'Buen servicio, pero un poco caro.',
+        'comment': 'Buen servicio, pero un poco caro. Aunque la calidad justifica el precio.',
         'rating': 3.8,
+        'date': 'Hace 3 meses',
+        'avatar': 'https://randomuser.me/api/portraits/men/2.jpg',
       },
     ];
 
     return reviews.map((review) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+      return Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nombre del usuario y calificación (alineados a los extremos)
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  review['user'],
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green[900],
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(review['avatar']),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        review['user'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        review['date'],
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 16),
-                    const SizedBox(width: 5),
-                    Text(
-                      review['rating'].toString(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[700],
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        review['rating'].toString(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-
-            // Comentario
+            const SizedBox(height: 12),
             Text(
               review['comment'],
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 15,
+                height: 1.4,
                 color: Colors.grey[700],
               ),
             ),
-
-            // Línea divisoria (opcional)
-            Divider(height: 30, color: Colors.grey[300]),
           ],
         ),
       );

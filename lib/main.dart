@@ -9,9 +9,11 @@ import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
+import 'package:servipopapp/views/califications/califications_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/navigation_view.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
+import 'package:servipopapp/views/provider/provider_profile_view.dart';
 import 'package:servipopapp/views/services/create_service_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart';
@@ -74,6 +76,10 @@ class MyApp extends StatelessWidget {
             '/forgot-password': (context) => ForgotPasswordView(),
             '/help': (context) => const HelpView(),
             '/service-form': (context) => CreateServiceScreen(),
+            '/rating': (context) => const CalificationsView(),
+            // '/provider-profile:providerId': (context) => const ProviderProfileView(
+              
+            // ),
           },
         );
       },

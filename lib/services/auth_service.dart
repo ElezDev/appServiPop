@@ -7,7 +7,7 @@ class AuthService {
   final StorageService _storageService = StorageService();
 
   AuthService() {
-    _dio.options.baseUrl = 'http://192.168.101.5:8000/api/';
+    _dio.options.baseUrl = 'http://192.168.101.3:8000/api/';
 
     _dio.interceptors.add(
       InterceptorsWrapper(
