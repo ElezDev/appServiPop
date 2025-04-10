@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:servipopapp/models/category_model.dart';
 import 'package:servipopapp/models/service_model.dart';
 import 'package:servipopapp/services/service_controller.dart';
@@ -17,7 +18,10 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   late Future<List<Service>> _servicesFuture;
   final ServiceController _serviceController = ServiceController();
   final Map<int, bool> _favorites = {};
-
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -47,158 +51,312 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
 
   }
 
-  void _bookService(Service service) {
-    final theme = Theme.of(context);
-    
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 60,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: theme.dividerColor,
-                  borderRadius: BorderRadius.circular(2),
-              ),
-              )
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Reservar servicio',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  service.portfolioImages.isNotEmpty
-                      ? service.portfolioImages.first.imageUrl
-                      : 'https://via.placeholder.com/150',
+void _bookService(Service service) {
+  final theme = Theme.of(context);
+  
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (context) => Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
                   width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular(2),
+                )
                 ),
               ),
-              title: Text(
-                service.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              const SizedBox(height: 24),
+              Text(
+                'Reservar servicio',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(
-                '\$${service.price.toStringAsFixed(2)}',
-                style: TextStyle(
-                  color: theme.primaryColor,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 16),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    service.portfolioImages.isNotEmpty
+                        ? service.portfolioImages.first.imageUrl
+                        : 'https://via.placeholder.com/150',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            _buildFormField(
-              icon: Icons.calendar_today,
-              label: 'Fecha',
-              hint: 'Selecciona una fecha',
-              theme: theme,
-            ),
-            const SizedBox(height: 16),
-            _buildFormField(
-              icon: Icons.access_time,
-              label: 'Hora',
-              hint: 'Selecciona una hora',
-              theme: theme,
-            ),
-            const SizedBox(height: 16),
-            _buildFormField(
-              icon: Icons.note,
-              label: 'Notas adicionales',
-              hint: 'Añade detalles adicionales',
-              maxLines: 3,
-              theme: theme,
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _showConfirmationDialog(service);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                title: Text(
+                  service.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                child: Text(
-                  'CONFIRMAR RESERVA',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.onPrimary,
+                subtitle: Text(
+                  '\$${service.price.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              _buildFormField(
+                controller: _dateController,
+                icon: Icons.calendar_today,
+                label: 'Fecha',
+                hint: 'Selecciona una fecha',
+                onTap: () => _selectDate(context),
+                theme: theme,
+              ),
+              const SizedBox(height: 16),
+              _buildFormField(
+                controller: _timeController,
+                icon: Icons.access_time,
+                label: 'Hora',
+                hint: 'Selecciona una hora',
+                onTap: () => _selectTime(context),
+                theme: theme,
+              ),
+              const SizedBox(height: 16),
+              _buildFormField(
+                controller: _addressController,
+                icon: Icons.location_on,
+                label: 'Dirección',
+                hint: 'Ingresa la dirección del servicio',
+                theme: theme,
+              ),
+              const SizedBox(height: 16),
+              _buildFormField(
+                controller: _notesController,
+                icon: Icons.note,
+                label: 'Notas adicionales',
+                hint: 'Añade detalles adicionales',
+                maxLines: 3,
+                theme: theme,
+              ),
+              const SizedBox(height: 24), // Espacio antes del botón
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => _confirmBooking(service),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(
+                    'CONFIRMAR RESERVA',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16), // Espacio extra al final para scroll
+            ],
+          ),
         ),
       ),
-      )
-    );
+    ),
+  );
+}
+Future<void> _selectDate(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime(DateTime.now().year + 1),
+  );
+  if (picked != null) {
+    _dateController.text = "${picked.day}/${picked.month}/${picked.year}";
   }
+}
+Future<void> _selectTime(BuildContext context) async {
+  final TimeOfDay? picked = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+  );
+  if (picked != null) {
+    _timeController.text = picked.format(context);
+  }
+}
+
 
   Widget _buildFormField({
-    required IconData icon,
-    required String label,
-    required String hint,
-    int maxLines = 1,
-    required ThemeData theme,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-            fontWeight: FontWeight.bold,
+  required TextEditingController controller,
+  required IconData icon,
+  required String label,
+  required String hint,
+  int maxLines = 1,
+  VoidCallback? onTap,
+  required ThemeData theme,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const SizedBox(height: 8),
+      InkWell(
+        onTap: onTap,
+        child: IgnorePointer(
+          ignoring: onTap != null,
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              prefixIcon: Icon(icon, color: theme.iconTheme.color?.withOpacity(0.6)),
+              hintText: hint,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: theme.dividerColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: theme.dividerColor),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 16,
+              ),
+            ),
+            maxLines: maxLines,
           ),
         ),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: theme.iconTheme.color?.withOpacity(0.6)),
-            hintText: hint,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: theme.dividerColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: theme.dividerColor),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 16,
-            ),
-          ),
-          maxLines: maxLines,
+      ),
+    ],
+  );
+}
+
+Future<void> _confirmBooking(Service service) async {
+  if (_dateController.text.isEmpty || 
+      _timeController.text.isEmpty || 
+      _addressController.text.isEmpty) {
+    _showErrorSnackbar('Por favor completa todos los campos requeridos');
+    return;
+  }
+
+  try {
+    // Parsear fecha y hora
+    final dateParts = _dateController.text.split('/');
+    final time = TimeOfDay.fromDateTime(DateFormat.jm().parse(_timeController.text));
+    
+    final scheduledAt = DateTime(
+      int.parse(dateParts[2]),
+      int.parse(dateParts[1]),
+      int.parse(dateParts[0]),
+      time.hour,
+      time.minute,
+    );
+
+    // Mostrar indicador de carga
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    final bookingResult = await _serviceController.bookService(
+      serviceId: service.id,
+      scheduledAt: scheduledAt,
+      address: _addressController.text,
+      notes: _notesController.text,
+    );
+
+    // Ocultar indicador de carga
+    Navigator.pop(context);
+
+    if (bookingResult['success'] == true) {
+      // Reserva exitosa
+      Navigator.pop(context); // Cerrar el bottom sheet
+      _showConfirmationDialog(service);
+    } else {
+      // Manejo de errores específicos
+      if (bookingResult['errors'] != null && 
+          bookingResult['errors']['scheduled_at'] != null) {
+        // Error de horario ocupado
+        _showScheduleConflictError(bookingResult['message']);
+      } else {
+        // Otros errores
+        _showErrorSnackbar(bookingResult['message']);
+      }
+    }
+  } catch (e) {
+    Navigator.pop(context); // Ocultar indicador de carga si hay error
+    _showErrorSnackbar('Error al procesar la reserva: ${e.toString()}');
+  }
+}
+void _showErrorSnackbar(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      duration: const Duration(seconds: 4),
+      action: SnackBarAction(
+        label: 'OK',
+        textColor: Colors.white,
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    ),
+  );
+}
+
+void _showScheduleConflictError(String message) {
+  final theme = Theme.of(context);
+  
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.error_outline, color: Colors.orange),
+          const SizedBox(width: 10),
+          Text('Horario no disponible', style: TextStyle(color: Colors.orange)),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(message),
+          const SizedBox(height: 16),
+          Text('Por favor, selecciona otro horario.', 
+               style: TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('ENTENDIDO', style: TextStyle(color: theme.primaryColor)),
         ),
       ],
-    );
-  }
+    ),
+  );
+}
 
   void _showConfirmationDialog(Service service) {
     final theme = Theme.of(context);
@@ -820,5 +978,13 @@ ClipRRect(
       );
     },
   );
+}
+@override
+void dispose() {
+  _dateController.dispose();
+  _timeController.dispose();
+  _notesController.dispose();
+  _addressController.dispose();
+  super.dispose();
 }
 }
