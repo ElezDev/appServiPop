@@ -11,6 +11,7 @@ import 'package:servipopapp/views/auth/login_view.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
+import 'package:servipopapp/views/auth/providers/notification_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
 import 'package:servipopapp/views/califications/califications_view.dart';
@@ -44,6 +45,7 @@ await FirebaseMsg().initFCM();
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => ServiceProviderProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()), 
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(
           create: (_) => UserProvider(userService: UserService()),
         ),
