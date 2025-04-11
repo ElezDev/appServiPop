@@ -1,4 +1,4 @@
-package com.example.servipopapp
+package com.elezdev.servipopapp
 
 import io.flutter.embedding.android.FlutterActivity
 
