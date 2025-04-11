@@ -49,160 +49,292 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
-      // Actualiza tu AppBar en HomeView
-appBar: AppBar(
-  title: Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      SizedBox(width: 10),
-      Text(
-        'ServiPop',
-        style: theme.textTheme.titleLarge?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  ),
-  centerTitle: true,
-  flexibleSpace: Container(
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          theme.primaryColor,
-          theme.colorScheme.secondary,
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ),
-  ),
-  elevation: 4,
-  actions: [
-    IconButton(
-      icon: Icon(Icons.location_on, color: Colors.white),
-      onPressed: () {
-        locationProvider.getCurrentLocation();
-      },
-    ),
-    Stack(
-      children: [
-        IconButton(
-          icon: Icon(Icons.notifications, color: Colors.white),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NotificationsPage()),
-            );
-          },
-        ),
-        if (Provider.of<NotificationProvider>(context).unreadCount > 0)
-          Positioned(
-            right: 8,
-            top: 8,
-            child: Container(
-              padding: EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/logo.png', // Añade tu logo aquí
+              height: 30,
+              width: 30,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'ServiPop',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2.0,
+                    color: Colors.black.withOpacity(0.3),
+                    offset: const Offset(1.0, 1.0),
+                  ),
+                ],
               ),
-              constraints: BoxConstraints(
-                minWidth: 16,
-                minHeight: 16,
+            ),
+          ],
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                theme.primaryColor,
+                theme.colorScheme.secondary,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 5,
               ),
-              child: Text(
-                '${Provider.of<NotificationProvider>(context).unreadCount}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
+            ],
+          ),
+        ),
+        elevation: 4,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.location_on, color: Colors.white),
+            onPressed: () {
+              locationProvider.getCurrentLocation();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(localizations?.getString('updating_location') ?? 'Actualizando ubicación...'),
+                  duration: const Duration(seconds: 1),
                 ),
-                textAlign: TextAlign.center,
+              );
+            },
+          ),
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                  );
+                },
+              ),
+              if (Provider.of<NotificationProvider>(context).unreadCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '${Provider.of<NotificationProvider>(context).unreadCount}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () => Scaffold.of(context).openDrawer(),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.white,
+                  backgroundImage: userProvider.user?.avatar != null
+                      ? CachedNetworkImageProvider(userProvider.user!.avatar!)
+                      : const AssetImage('assets/images/default_profile.png')
+                          as ImageProvider,
+                  child: userProvider.user?.avatar == null
+                      ? Icon(Icons.person, color: theme.primaryColor)
+                      : null,
+                ),
               ),
             ),
           ),
-      ],
-    ),
-    GestureDetector(
-      onTap: () => Scaffold.of(context).openDrawer(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.white,
-          backgroundImage: userProvider.user?.avatar != null
-              ? CachedNetworkImageProvider(userProvider.user!.avatar!)
-              : const AssetImage('assets/images/default_profile.png')
-                  as ImageProvider,
-          child: userProvider.user?.avatar == null
-              ? Icon(Icons.person, color: theme.primaryColor)
-              : null,
-        ),
+        ],
       ),
-    ),
-  ],
-),
       drawer: const UserDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            if (locationProvider.currentCity != null &&
-                locationProvider.currentDepartment != null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      theme.primaryColor,
-                      theme.colorScheme.secondary,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.white),
-                    SizedBox(width: 10),
-                    Text(
-                      'Ubicación: ${locationProvider.currentCity} - ${locationProvider.currentDepartment}',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              theme.colorScheme.background.withOpacity(0.05),
+              theme.colorScheme.background.withOpacity(0.1),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Sección de Ubicación Mejorada
+              if (locationProvider.currentCity != null &&
+                  locationProvider.currentDepartment != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_on, color: theme.primaryColor),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              '${locationProvider.currentCity} - ${locationProvider.currentDepartment}',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Lógica para cambiar ubicación
+                            },
+                            child: Text(
+                              localizations?.getString('change') ?? 'Cambiar',
+                              style: TextStyle(color: theme.primaryColor),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
+                ),
+
+              // Contenido principal con animaciones
+              AnimationLimiter(
+                child: Column(
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 500),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      horizontalOffset: 50.0,
+                      child: FadeInAnimation(child: widget),
+                    ),
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: CarouselWidget(),
+                      ),
+                      SectionTitle(
+                        title: localizations?.getString('categories') ?? 'Categorías',
+                        theme: theme,
+                      ),
+                      const CategoryListWidget(),
+                      SectionTitle(
+                        title: localizations?.getString('featured_providers') ?? 'Proveedores Destacados',
+                        theme: theme,
+                      ),
+                      const ProviderGridWidget(),
+                    ],
+                  ),
                 ),
               ),
-            AnimationLimiter(
-              child: Column(
-                children: AnimationConfiguration.toStaggeredList(
-                  duration: const Duration(milliseconds: 500),
-                  childAnimationBuilder: (widget) => SlideAnimation(
-                    horizontalOffset: 50.0,
-                    child: FadeInAnimation(child: widget),
+
+              // Mapa Mejorado
+              if (locationProvider.currentPosition != null)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: MapWidget(
+                          initialPosition: LatLng(
+                            locationProvider.currentPosition!.latitude,
+                            locationProvider.currentPosition!.longitude,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                          mini: true,
+                          backgroundColor: theme.primaryColor,
+                          onPressed: () {
+                            locationProvider.getCurrentLocation();
+                          },
+                          child: const Icon(Icons.my_location, color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
-                  children: [
-                    const CarouselWidget(),
-                    const CategoryListWidget(),
-                    const ProviderGridWidget(),
-                  ],
                 ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Widget auxiliar para títulos de sección
+class SectionTitle extends StatelessWidget {
+  final String title;
+  final ThemeData theme;
+
+  const SectionTitle({
+    super.key,
+    required this.title,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.primaryColor,
+            ),
+          ),
+          const Spacer(),
+          TextButton(
+            onPressed: () {
+              // Navegar a ver todos
+            },
+            child: Text(
+              'Ver todos',
+              style: TextStyle(
+                color: theme.colorScheme.secondary,
+                fontSize: 14,
               ),
             ),
-            if (locationProvider.currentPosition != null)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: MapWidget(
-                  initialPosition: LatLng(
-                    locationProvider.currentPosition!.latitude,
-                    locationProvider.currentPosition!.longitude,
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

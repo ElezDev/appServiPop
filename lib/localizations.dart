@@ -42,6 +42,8 @@ class AppLocalizations {
       name: 'contactDescription');
   String get developedBy => Intl.message('Developed by ElezDevTech', name: 'developedBy');
   String get copyright => Intl.message('© 2025 - All rights reserved', name: 'copyright');
+
+  getString(String s) {}
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
