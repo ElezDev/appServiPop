@@ -86,13 +86,13 @@ class _BecomeProviderScreenState extends State<BecomeProviderScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Imagen de encabezado
-                    Center(
-                      child: Image.asset(
-                        'assets/images/default_profile.jpg', 
-                        width: 200,
-                        height: 150,
-                      ),
-                    ),
+                    // Center(
+                    //   child: Image.asset(
+                    //     'assets/images/default_profile.jpg', 
+                    //     width: 200,
+                    //     height: 150,
+                    //   ),
+                    // ),
                     const SizedBox(height: 20),
                     Text(
                       'Completa tu información como proveedor',

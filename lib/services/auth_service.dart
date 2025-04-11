@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'storage_service.dart'; 
+import 'storage_service.dart';
 import '../models/auth_response.dart';
 
 class AuthService {
@@ -37,26 +37,57 @@ class AuthService {
     );
   }
 
-Future<AuthResponse> login(String email, String password) async {
-  try {
-    final response = await _dio.post('login', data: {
-      'email': email,
-      'password': password,
-    });
-    
-    final authResponse = AuthResponse.fromJson(response.data);
-    
-    await _storageService.saveToken(authResponse.token);
-    await _storageService.saveRefreshToken(authResponse.refreshToken);
-        if (authResponse.user.role != null) {
-      await _storageService.saveUserRole(authResponse.user.role!);
+  // Future<AuthResponse> login(String email, String password) async {
+  //   try {
+  //     final response = await _dio.post('login', data: {
+  //       'email': email,
+  //       'password': password,
+  //     });
+
+  //     final authResponse = AuthResponse.fromJson(response.data);
+
+  //     await _storageService.saveToken(authResponse.token);
+  //     await _storageService.saveRefreshToken(authResponse.refreshToken);
+  //         if (authResponse.user.role != null) {
+  //       await _storageService.saveUserRole(authResponse.user.role!);
+  //     }
+
+  //     return authResponse;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+  // auth_service.dart
+  Future<AuthResponse> login(String email, String password) async {
+    try {
+      final response = await _dio.post(
+        'login',
+        data: {'email': email, 'password': password},
+      );
+
+      final authResponse = AuthResponse.fromJson(response.data);
+
+      await _storageService.saveToken(authResponse.token);
+      await _storageService.saveRefreshToken(authResponse.refreshToken);
+      if (authResponse.user.role != null) {
+        await _storageService.saveUserRole(authResponse.user.role!);
+      }
+
+      return authResponse;
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final errorData = e.response!.data as Map<String, dynamic>;
+        if (errorData.containsKey('error')) {
+          throw LoginException(errorData['error'].toString());
+        } else if (errorData.containsKey('message')) {
+          throw LoginException(errorData['message'].toString());
+        }
+      }
+      throw LoginException('Error de conexión. Por favor intenta nuevamente.');
+    } catch (e) {
+      throw LoginException('Ocurrió un error inesperado');
     }
-    
-    return authResponse;
-  } catch (e) {
-    rethrow;
   }
-}
 
   Future<AuthResponse> refreshToken() async {
     try {
@@ -64,9 +95,10 @@ Future<AuthResponse> login(String email, String password) async {
       if (refreshToken == null) {
         throw Exception('No refresh token available');
       }
-      final response = await _dio.post('refresh-token', data: {
-        'refresh_token': refreshToken,
-      });
+      final response = await _dio.post(
+        'refresh-token',
+        data: {'refresh_token': refreshToken},
+      );
 
       final authResponse = AuthResponse.fromJson(response.data);
 
@@ -90,6 +122,12 @@ Future<AuthResponse> login(String email, String password) async {
   Future<String?> getRefreshToken() async {
     return await _storageService.getRefreshToken();
   }
+}
 
-  
+class LoginException implements Exception {
+  final String message;
+  LoginException(this.message);
+
+  @override
+  String toString() => message;
 }

@@ -19,51 +19,63 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
   XFile? _avatarFile;
   bool _isLoading = false;
-  final Dio _dio = Dio();
   final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.green[800],
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text('Registro', style: TextStyle(color: colorScheme.onPrimary)),
+        backgroundColor: colorScheme.primary,
+        iconTheme: IconThemeData(color: colorScheme.onPrimary),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // _buildHeader(),
-              // SizedBox(height: 20),
-              _buildAvatarPicker(),
-              const SizedBox(height: 20),
-              _buildNameField(),
-              const SizedBox(height: 15),
-              _buildLastnameField(),
-              const SizedBox(height: 15),
-              _buildEmailField(),
-              const SizedBox(height: 15),
-              _buildPhoneField(),
-              const SizedBox(height: 15),
-              _buildAddressField(),
-              const SizedBox(height: 15),
-              _buildPasswordField(),
-              const SizedBox(height: 25),
-              _buildRegisterButton(),
-              const SizedBox(height: 15),
-              _buildLoginLink(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colorScheme.surface.withOpacity(0.2),
+              colorScheme.background,
             ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildAvatarPicker(colorScheme, textTheme),
+                const SizedBox(height: 24),
+                _buildNameField(colorScheme, textTheme),
+                const SizedBox(height: 16),
+                _buildLastnameField(colorScheme, textTheme),
+                const SizedBox(height: 16),
+                _buildEmailField(colorScheme, textTheme),
+                const SizedBox(height: 16),
+                _buildPhoneField(colorScheme, textTheme),
+                const SizedBox(height: 16),
+                _buildAddressField(colorScheme, textTheme),
+                const SizedBox(height: 16),
+                _buildPasswordField(colorScheme, textTheme),
+                const SizedBox(height: 24),
+                _buildRegisterButton(colorScheme, textTheme),
+                const SizedBox(height: 16),
+                _buildLoginLink(colorScheme, textTheme),
+              ],
+            ),
           ),
         ),
       ),
@@ -72,77 +84,54 @@ class _RegisterViewState extends State<RegisterView> {
 
   // ============ WIDGETS DEL FORMULARIO ============
 
-  Widget _buildHeader() {
-    return Column(
-      children: [
-        const SizedBox(height: 15),
-        Text(
-          'Crea tu cuenta',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.green[900],
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          'Completa tus datos para comenzar',
-          style: TextStyle(color: Colors.grey[600]),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAvatarPicker() {
+  Widget _buildAvatarPicker(ColorScheme colorScheme, TextTheme textTheme) {
     return Column(
       children: [
         GestureDetector(
           onTap: _showImageSourceDialog,
           child: CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.grey[200],
-            backgroundImage:
-                _avatarFile != null ? FileImage(File(_avatarFile!.path)) : null,
-            child:
-                _avatarFile == null
-                    ? const Icon(Icons.camera_alt, size: 30, color: Colors.grey)
-                    : null,
+            backgroundColor: colorScheme.surfaceVariant,
+            backgroundImage: _avatarFile != null ? FileImage(File(_avatarFile!.path)) : null,
+            child: _avatarFile == null
+                ? Icon(Icons.camera_alt, size: 30, color: colorScheme.onSurfaceVariant)
+                : null,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         TextButton.icon(
           onPressed: _showImageSourceDialog,
-          icon: Icon(Icons.edit, size: 16, color: Colors.green[700]),
+          icon: Icon(Icons.edit, size: 16, color: colorScheme.primary),
           label: Text(
             'Cambiar foto de perfil',
-            style: TextStyle(color: Colors.green[700]),
+            style: textTheme.bodySmall?.copyWith(color: colorScheme.primary),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildNameField() {
+  Widget _buildNameField(ColorScheme colorScheme, TextTheme textTheme) {
     return TextFormField(
       controller: _nameController,
-      decoration: _inputDecoration('Nombre', Icons.person),
+      decoration: _inputDecoration('Nombre', Icons.person, colorScheme, textTheme),
       validator: (value) => value!.isEmpty ? 'Ingresa tu nombre' : null,
     );
   }
 
-  Widget _buildLastnameField() {
+  Widget _buildLastnameField(ColorScheme colorScheme, TextTheme textTheme) {
     return TextFormField(
       controller: _lastnameController,
-      decoration: _inputDecoration('Apellido', Icons.person_outline),
+      decoration: _inputDecoration('Apellido', Icons.person_outline, colorScheme, textTheme),
       validator: (value) => value!.isEmpty ? 'Ingresa tu apellido' : null,
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildEmailField(ColorScheme colorScheme, TextTheme textTheme) {
     return TextFormField(
       controller: _emailController,
       keyboardType: TextInputType.emailAddress,
-      decoration: _inputDecoration('Correo electrónico', Icons.email),
+      decoration: _inputDecoration('Correo electrónico', Icons.email, colorScheme, textTheme),
       validator: (value) {
         if (value!.isEmpty) return 'Ingresa tu correo';
         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
@@ -153,28 +142,28 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-  Widget _buildPhoneField() {
+  Widget _buildPhoneField(ColorScheme colorScheme, TextTheme textTheme) {
     return TextFormField(
       controller: _phoneController,
       keyboardType: TextInputType.phone,
-      decoration: _inputDecoration('Teléfono', Icons.phone),
+      decoration: _inputDecoration('Teléfono', Icons.phone, colorScheme, textTheme),
       validator: (value) => value!.isEmpty ? 'Ingresa tu teléfono' : null,
     );
   }
 
-  Widget _buildAddressField() {
+  Widget _buildAddressField(ColorScheme colorScheme, TextTheme textTheme) {
     return TextFormField(
       controller: _addressController,
-      decoration: _inputDecoration('Dirección', Icons.home),
+      decoration: _inputDecoration('Dirección', Icons.home, colorScheme, textTheme),
       validator: (value) => value!.isEmpty ? 'Ingresa tu dirección' : null,
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(ColorScheme colorScheme, TextTheme textTheme) {
     return TextFormField(
       controller: _passwordController,
       obscureText: true,
-      decoration: _inputDecoration('Contraseña', Icons.lock),
+      decoration: _inputDecoration('Contraseña', Icons.lock, colorScheme, textTheme),
       validator: (value) {
         if (value!.isEmpty) return 'Ingresa tu contraseña';
         if (value.length < 6) return 'Mínimo 6 caracteres';
@@ -183,35 +172,54 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-  Widget _buildRegisterButton() {
+  Widget _buildRegisterButton(ColorScheme colorScheme, TextTheme textTheme) {
     return ElevatedButton(
       onPressed: _isLoading ? null : _submitForm,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green[800],
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 0,
       ),
-      child:
-          _isLoading
-              ? const CircularProgressIndicator(color: Colors.white)
-              : const Text('REGISTRARSE', style: TextStyle(fontSize: 16, color: Colors.white)),
+      child: _isLoading
+          ? SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: colorScheme.onPrimary,
+              ),
+            )
+          : Text(
+              'REGISTRARSE',
+              style: textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
     );
   }
 
-  Widget _buildLoginLink() {
+  Widget _buildLoginLink(ColorScheme colorScheme, TextTheme textTheme) {
     return Center(
       child: TextButton(
         onPressed: () => Navigator.pop(context),
         child: Text.rich(
           TextSpan(
             text: '¿Ya tienes cuenta? ',
-            style: TextStyle(color: Colors.grey[600]),
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurface.withOpacity(0.7),
+            ),
             children: [
               TextSpan(
                 text: 'Inicia sesión',
                 style: TextStyle(
-                  color: Colors.green[800],
-                  fontWeight: FontWeight.bold,
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -223,86 +231,105 @@ class _RegisterViewState extends State<RegisterView> {
 
   // ============ FUNCIONALIDAD ============
 
-  InputDecoration _inputDecoration(String label, IconData icon) {
+  InputDecoration _inputDecoration(
+    String label,
+    IconData icon,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
     return InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, color: Colors.green[800]),
+      labelStyle: textTheme.bodyMedium?.copyWith(
+        color: colorScheme.onSurface.withOpacity(0.7),
+      ),
+      prefixIcon: Icon(icon, color: colorScheme.primary.withOpacity(0.8)),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.grey[400]!),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: colorScheme.outline.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: colorScheme.outline.withOpacity(0.3),
+          width: 1,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: Colors.green[800]!, width: 2),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: colorScheme.primary,
+          width: 1.5,
+        ),
       ),
     );
   }
 
- Future<void> _showImageSourceDialog() async {
-  await showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent, // Para que se vean los bordes redondeados
-    builder: (context) => Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // --- Indicador de deslizamiento ---
-          Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 5),
-            width: 40,
-            height: 5,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          // --- Título opcional ---
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: Text(
-              'Seleccionar imagen',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[700],
+  Future<void> _showImageSourceDialog() async {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 5),
+              width: 40,
+              height: 5,
+              decoration: BoxDecoration(
+                color: colorScheme.outline.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
-          ),
-          // --- Opciones ---
-          ListTile(
-            leading: Icon(Icons.camera_alt, color: Colors.greenAccent[700]),
-            title: const Text('Tomar foto'),
-            onTap: () {
-              Navigator.pop(context);
-              _pickImage(ImageSource.camera);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.photo_library, color: Colors.greenAccent[700]),
-            title: const Text('Elegir de galería'),
-            onTap: () {
-              Navigator.pop(context);
-              _pickImage(ImageSource.gallery);
-            },
-          ),
-          // --- Divisor y Cancelar ---
-          const Divider(height: 1, thickness: 0.5),
-          ListTile(
-            leading: Icon(Icons.close, color: Colors.red[400]),
-            title: const Text('Cancelar'),
-            onTap: () => Navigator.pop(context),
-          ),
-          // --- Espacio para evitar el notch ---
-          SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Text(
+                'Seleccionar imagen',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt, color: colorScheme.primary),
+              title: const Text('Tomar foto'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library, color: colorScheme.primary),
+              title: const Text('Elegir de galería'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+            const Divider(height: 1, thickness: 0.5),
+            ListTile(
+              leading: Icon(Icons.close, color: colorScheme.error),
+              title: const Text('Cancelar'),
+              onTap: () => Navigator.pop(context),
+            ),
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
+
   Future<void> _pickImage(ImageSource source) async {
     try {
       PermissionStatus status;
@@ -333,19 +360,22 @@ class _RegisterViewState extends State<RegisterView> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error: ${e.toString()}'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
   }
 
   void _showPermissionDeniedMessage(String feature) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Permiso denegado para $feature'),
-        action: const SnackBarAction(
+        backgroundColor: colorScheme.error,
+        action: SnackBarAction(
           label: 'Ajustes',
-          textColor: Colors.white,
+          textColor: colorScheme.onError,
           onPressed: openAppSettings,
         ),
       ),
@@ -384,7 +414,6 @@ class _RegisterViewState extends State<RegisterView> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         _showSuccessDialog();
-        print(response.data);
       }
     } on DioException catch (e) {
       String errorMessage = 'Error en el registro';
@@ -392,7 +421,10 @@ class _RegisterViewState extends State<RegisterView> {
         errorMessage = e.response?.data['message'] ?? errorMessage;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -400,29 +432,64 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   void _showSuccessDialog() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              '¡Registro exitoso!',
-              style: TextStyle(color: Colors.green[800]),
-            ),
-            content: const Text('Tu cuenta ha sido creada correctamente.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Cierra el diálogo
-                  Navigator.pop(context); // Regresa al login
-                },
-                child: Text(
-                  'Aceptar',
-                  style: TextStyle(color: Colors.green[800]),
+      builder: (context) => Dialog(
+        backgroundColor: colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                size: 64,
+                color: colorScheme.primary,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                '¡Registro exitoso!',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Tu cuenta ha sido creada correctamente.',
+                style: theme.textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Cierra el diálogo
+                    Navigator.pop(context); // Regresa al login
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Continuar'),
                 ),
               ),
             ],
           ),
+        ),
+      ),
     );
   }
 

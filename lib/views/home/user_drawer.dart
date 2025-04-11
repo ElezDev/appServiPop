@@ -156,9 +156,7 @@ class UserDrawer extends StatelessWidget {
     String? userRole,
     ThemeData theme,
   ) {
-    final commonItems = [
-    
-    ];
+    final commonItems = [];
 
     final roleSpecificItems = <Widget>[];
     switch (userRole) {
@@ -176,7 +174,7 @@ class UserDrawer extends StatelessWidget {
           ),
           _buildDrawerItem(
             context: context,
-            icon: Icons.book,
+            icon: Icons.calendar_month_sharp,
             title: 'Mis Bookings',
             theme: theme,
             onTap: () {
@@ -205,12 +203,16 @@ class UserDrawer extends StatelessWidget {
     return [
       ...commonItems,
       ...roleSpecificItems,
-       _buildDrawerItem(
+    
+      _buildDrawerItem(
         context: context,
-        icon: Icons.settings,
-        title: 'Configuración',
+        icon: Icons.help_outline,
+        title: 'Ayuda',
         theme: theme,
-        onTap: () => Navigator.pop(context),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/help');
+        },
       ),
       _buildDrawerItem(
         context: context,
@@ -224,17 +226,6 @@ class UserDrawer extends StatelessWidget {
           );
           await authProvider.logout();
           Navigator.pushReplacementNamed(context, '/login');
-        },
-      ),
-      
-      _buildDrawerItem(
-        context: context,
-        icon: Icons.help_outline,
-        title: 'Ayuda',
-        theme: theme,
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, '/help');
         },
       ),
     ];
