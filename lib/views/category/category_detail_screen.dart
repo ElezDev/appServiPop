@@ -498,7 +498,7 @@ void _showScheduleConflictError(String message) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/empty.jpg',
+                    'assets/images/emty.jpg',
                     width: 200,
                     height: 200,
                   ),

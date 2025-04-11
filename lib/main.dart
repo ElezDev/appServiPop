@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:servipopapp/core/pusher.dart';
 import 'package:servipopapp/core/theme_provider.dart';
 import 'package:servipopapp/firebase_msg.dart';
 import 'package:servipopapp/firebase_options.dart';
@@ -30,6 +31,7 @@ import 'core/styles/app_theme.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    // await initPusher();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

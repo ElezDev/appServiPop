@@ -6,6 +6,7 @@ import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/notification_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
+import 'package:servipopapp/views/category/all_category_view.dart';
 import 'package:servipopapp/views/home/user_drawer.dart';
 import 'package:servipopapp/views/notifications/notifications_page.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
@@ -23,16 +24,20 @@ class HomeView extends StatefulWidget {
   _HomeViewState createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin {
+class _HomeViewState extends State<HomeView>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<CategoryProvider>(context, listen: false).fetchCategories();
-      Provider.of<LocationProvider>(context, listen: false).getCurrentLocation();
+      Provider.of<LocationProvider>(
+        context,
+        listen: false,
+      ).getCurrentLocation();
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.isAuthenticated) {
         Provider.of<UserProvider>(context, listen: false).loadUser();
@@ -80,10 +85,7 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                theme.primaryColor,
-                theme.colorScheme.secondary,
-              ],
+              colors: [theme.primaryColor, theme.colorScheme.secondary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -104,7 +106,10 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               locationProvider.getCurrentLocation();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(localizations?.getString('updating_location') ?? 'Actualizando ubicación...'),
+                  content: Text(
+                    localizations?.getString('updating_location') ??
+                        'Actualizando ubicación...',
+                  ),
                   duration: const Duration(seconds: 1),
                 ),
               );
@@ -117,7 +122,9 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationsPage(),
+                    ),
                   );
                 },
               ),
@@ -137,10 +144,7 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                     ),
                     child: Text(
                       '${Provider.of<NotificationProvider>(context).unreadCount}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -154,21 +158,24 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
                 child: CircleAvatar(
                   radius: 18,
                   backgroundColor: Colors.white,
-                  backgroundImage: userProvider.user?.avatar != null
-                      ? CachedNetworkImageProvider(userProvider.user!.avatar!)
-                      : const AssetImage('assets/images/default_profile.png')
-                          as ImageProvider,
-                  child: userProvider.user?.avatar == null
-                      ? Icon(Icons.person, color: theme.primaryColor)
-                      : null,
+                  backgroundImage:
+                      userProvider.user?.avatar != null
+                          ? CachedNetworkImageProvider(
+                            userProvider.user!.avatar!,
+                          )
+                          : const AssetImage(
+                                'assets/images/default_profile.png',
+                              )
+                              as ImageProvider,
+                  child:
+                      userProvider.user?.avatar == null
+                          ? Icon(Icons.person, color: theme.primaryColor)
+                          : null,
                 ),
               ),
             ),
@@ -194,7 +201,10 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               if (locationProvider.currentCity != null &&
                   locationProvider.currentDepartment != null)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Card(
                     elevation: 3,
                     shape: RoundedRectangleBorder(
@@ -234,22 +244,35 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                 child: Column(
                   children: AnimationConfiguration.toStaggeredList(
                     duration: const Duration(milliseconds: 500),
-                    childAnimationBuilder: (widget) => SlideAnimation(
-                      horizontalOffset: 50.0,
-                      child: FadeInAnimation(child: widget),
-                    ),
+                    childAnimationBuilder:
+                        (widget) => SlideAnimation(
+                          horizontalOffset: 50.0,
+                          child: FadeInAnimation(child: widget),
+                        ),
                     children: [
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8),
                         child: CarouselWidget(),
                       ),
                       SectionTitle(
-                        title: localizations?.getString('categories') ?? 'Categorías',
+                        title:
+                            localizations?.getString('categories') ??
+                            'Categorías',
                         theme: theme,
+                        onSeeAllPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AllCategoriesScreen(),
+                            ),
+                          );
+                        },
                       ),
                       const CategoryListWidget(),
                       SectionTitle(
-                        title: localizations?.getString('featured_providers') ?? 'Proveedores Destacados',
+                        title:
+                            localizations?.getString('featured_providers') ??
+                            'Proveedores Destacados',
                         theme: theme,
                       ),
                       const ProviderGridWidget(),
@@ -282,7 +305,10 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                           onPressed: () {
                             locationProvider.getCurrentLocation();
                           },
-                          child: const Icon(Icons.my_location, color: Colors.white),
+                          child: const Icon(
+                            Icons.my_location,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -301,11 +327,13 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
 class SectionTitle extends StatelessWidget {
   final String title;
   final ThemeData theme;
+  final VoidCallback? onSeeAllPressed; // Nuevo parámetro
 
   const SectionTitle({
     super.key,
     required this.title,
     required this.theme,
+    this.onSeeAllPressed, // Hacerlo opcional
   });
 
   @override
@@ -323,9 +351,7 @@ class SectionTitle extends StatelessWidget {
           ),
           const Spacer(),
           TextButton(
-            onPressed: () {
-              // Navegar a ver todos
-            },
+            onPressed: onSeeAllPressed, // Usar el callback aquí
             child: Text(
               'Ver todos',
               style: TextStyle(
