@@ -15,8 +15,14 @@ class UserDrawer extends StatelessWidget {
     final theme = Theme.of(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false); // Obtener el ThemeProvider
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+    final themeProvider = Provider.of<ThemeProvider>(
+      context,
+      listen: false,
+    ); // Obtener el ThemeProvider
     final storageService = StorageService();
 
     return Drawer(
@@ -39,20 +45,19 @@ class UserDrawer extends StatelessWidget {
             currentAccountPicture: CircleAvatar(
               radius: 30,
               backgroundColor: Colors.white,
-              backgroundImage: userProvider.user?.avatar != null
-                  ? CachedNetworkImageProvider(userProvider.user!.avatar!)
-                  : const AssetImage('assets/images/default_profile.png')
-                      as ImageProvider,
-              child: userProvider.user?.avatar == null
-                  ? Icon(Icons.person, size: 30, color: theme.primaryColor)
-                  : null,
+              backgroundImage:
+                  userProvider.user?.avatar != null
+                      ? CachedNetworkImageProvider(userProvider.user!.avatar!)
+                      : const AssetImage('assets/images/default_profile.png')
+                          as ImageProvider,
+              child:
+                  userProvider.user?.avatar == null
+                      ? Icon(Icons.person, size: 30, color: theme.primaryColor)
+                      : null,
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  theme.primaryColor,
-                  theme.colorScheme.secondary,
-                ],
+                colors: [theme.primaryColor, theme.colorScheme.secondary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -64,12 +69,10 @@ class UserDrawer extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return Center(
-                    child: CircularProgressIndicator(
-                      color: theme.primaryColor,
-                    ),
+                    child: CircularProgressIndicator(color: theme.primaryColor),
                   );
                 }
-                
+
                 final userRole = snapshot.data;
                 return ListView(
                   padding: EdgeInsets.zero,
@@ -82,10 +85,7 @@ class UserDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(
-                  color: theme.dividerColor,
-                  width: 1.0,
-                ),
+                top: BorderSide(color: theme.dividerColor, width: 1.0),
               ),
             ),
             child: Column(
@@ -119,19 +119,19 @@ class UserDrawer extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: Image.asset(
-                        'assets/flags/reino.png', 
+                        'assets/flags/reino.png',
                         width: 32,
                         height: 32,
                       ),
                       onPressed: () {
                         languageProvider.setLocale(const Locale('en', ''));
-                        Navigator.pop(context); 
+                        Navigator.pop(context);
                       },
                       tooltip: 'Cambiar a inglés',
                     ),
                     IconButton(
                       icon: Image.asset(
-                        'assets/flags/espana.png', 
+                        'assets/flags/espana.png',
                         width: 32,
                         height: 32,
                       ),
@@ -151,44 +151,13 @@ class UserDrawer extends StatelessWidget {
     );
   }
 
-
-  List<Widget> _buildDrawerItems(BuildContext context, String? userRole, ThemeData theme) {
+  List<Widget> _buildDrawerItems(
+    BuildContext context,
+    String? userRole,
+    ThemeData theme,
+  ) {
     final commonItems = [
-      _buildDrawerItem(
-        context: context,
-        icon: Icons.person,
-        title: 'Perfil',
-        theme: theme,
-        onTap: () => Navigator.pop(context),
-      ),
-      _buildDrawerItem(
-        context: context,
-        icon: Icons.star,
-        title: 'Rating',
-        theme: theme,
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, '/rating');
-        },
-      ),
-      _buildDrawerItem(
-        context: context,
-        icon: Icons.settings,
-        title: 'Configuración',
-        theme: theme,
-        onTap: () => Navigator.pop(context),
-      ),
-      _buildDrawerItem(
-        context: context,
-        icon: Icons.help_outline,
-        title: 'Ayuda',
-        theme: theme,
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, '/help');
-        },
-      ),
-      Divider(color: theme.dividerColor),
+    
     ];
 
     final roleSpecificItems = <Widget>[];
@@ -207,28 +176,18 @@ class UserDrawer extends StatelessWidget {
           ),
           _buildDrawerItem(
             context: context,
-            icon: Icons.people,
-            title: 'Gestión de Usuarios',
+            icon: Icons.book,
+            title: 'Mis Bookings',
             theme: theme,
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/user-management');
+              Navigator.pushNamed(context, '/bookinsProvider');
             },
           ),
         ]);
         break;
       case 'user':
         roleSpecificItems.addAll([
-          _buildDrawerItem(
-            context: context,
-            icon: Icons.store,
-            title: 'Mi Tienda',
-            theme: theme,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/my-store');
-            },
-          ),
           _buildDrawerItem(
             context: context,
             icon: Icons.analytics,
@@ -241,44 +200,41 @@ class UserDrawer extends StatelessWidget {
           ),
         ]);
         break;
-      case 'customer':
-        roleSpecificItems.addAll([
-          _buildDrawerItem(
-            context: context,
-            icon: Icons.shopping_bag,
-            title: 'Mis Compras',
-            theme: theme,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/my-orders');
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: Icons.favorite,
-            title: 'Favoritos',
-            theme: theme,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/favorites');
-            },
-          ),
-        ]);
-        break;
     }
 
     return [
       ...commonItems,
       ...roleSpecificItems,
+       _buildDrawerItem(
+        context: context,
+        icon: Icons.settings,
+        title: 'Configuración',
+        theme: theme,
+        onTap: () => Navigator.pop(context),
+      ),
       _buildDrawerItem(
         context: context,
         icon: Icons.logout,
         title: 'Cerrar sesión',
         theme: theme,
         onTap: () async {
-          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          final authProvider = Provider.of<AuthProvider>(
+            context,
+            listen: false,
+          );
           await authProvider.logout();
           Navigator.pushReplacementNamed(context, '/login');
+        },
+      ),
+      
+      _buildDrawerItem(
+        context: context,
+        icon: Icons.help_outline,
+        title: 'Ayuda',
+        theme: theme,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/help');
         },
       ),
     ];

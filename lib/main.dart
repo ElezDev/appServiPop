@@ -10,11 +10,13 @@ import 'package:servipopapp/services/user_service.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
 import 'package:servipopapp/views/auth/login_view.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
+import 'package:servipopapp/views/auth/providers/bookings_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
 import 'package:servipopapp/views/auth/providers/notification_provider.dart';
 import 'package:servipopapp/views/auth/providers/user_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
+import 'package:servipopapp/views/bookins/bookins_view.dart';
 import 'package:servipopapp/views/califications/califications_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/navigation_view.dart';
@@ -48,6 +50,10 @@ await FirebaseMsg().initFCM();
         ChangeNotifierProvider(create: (_) => ServiceProviderProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()), 
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => BookingsProvider()),
+
+
+
         ChangeNotifierProvider(
           create: (_) => UserProvider(userService: UserService()),
         ),
@@ -95,6 +101,7 @@ class MyApp extends StatelessWidget {
         '/help': (context) => const HelpView(),
         '/service-form': (context) => CreateServiceScreen(),
         '/rating': (context) => const CalificationsView(),
+        '/bookinsProvider': (context) => const BookingsScreen(),
       },
     );
   }
