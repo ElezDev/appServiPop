@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:servipopapp/core/theme_provider.dart';
+import 'package:servipopapp/firebase_options.dart';
 import 'package:servipopapp/services/service_provider_provider.dart';
 import 'package:servipopapp/services/user_service.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
@@ -21,13 +23,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'core/styles/app_theme.dart';
 
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 // ... otros imports ...
 
-void main() {
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+   await Firebase.initializeApp(
+     options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(
     MultiProvider(
