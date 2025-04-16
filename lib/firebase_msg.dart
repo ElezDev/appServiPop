@@ -29,7 +29,7 @@ class FirebaseMsg {
 
     final token = await msgService.getToken();
     if (token != null) {
-      print("Token FCM: $token");
+      print("Token FCMsssssssssssssssssssssssssssaaaa: $token");
       await _updateTokenOnServer(token);
     }
   }

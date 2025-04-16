@@ -1,0 +1,1 @@
+/home/virtualt/Escritorio/SP/appServiPop/build/app/intermediates/cxx/Debug/351d6256/obj/arm64-v8a

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:servipopapp/views/Profile/profile_view.dart';
 import 'package:servipopapp/views/favorites/favorites_view.dart';
 import 'package:servipopapp/views/home/home_view.dart';
-import 'package:servipopapp/views/profile/profile_view.dart';
 import 'package:servipopapp/views/search/search_view.dart';
 import 'package:servipopapp/localizations.dart';
 
@@ -18,8 +18,8 @@ class _MainAppState extends State<MainApp> {
   final List<Widget> _screens = [
     const HomeView(),
     const SearchView(),
-    FavoritesView(),
-    ProfileView(),
+    const FavoritesView(),
+    const ProfileView(),
   ];
 
   void _onItemTapped(int index) {
