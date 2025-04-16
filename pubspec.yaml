@@ -19,7 +19,6 @@ dependencies:
   url_launcher: ^6.3.1
   permission_handler: ^11.4.0
   intl_translation: ^0.20.1
-  flutter_native_splash: ^2.4.5
   flutter_localizations:
     sdk: flutter
   shared_preferences: ^2.5.2
@@ -57,16 +56,16 @@ flutter:
 # Configuración de flutter_native_splash (debe estar al mismo nivel que "flutter:")
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/images/onbo1.png
-  branding: assets/images/onbo1.png
+  image: assets/images/logo.png
+  branding: assets/images/logo.png
   color_dark: "#121212"
-  image_dark: assets/images/onbo1.png
-  branding_dark: assets/images/onbo1.png
+  image_dark: assets/images/logo.png
+  branding_dark: assets/images/logo.png
 
   android_12:
-    image: assets/images/onbo1.png
+    image: assets/images/logo.png
     icon_background_color: "#ffffff"
-    image_dark: assets/images/onbo1.png
+    image_dark: assets/images/logo.png
     icon_background_color_dark: "#121212"
 
   web: false

@@ -25,21 +25,17 @@ import 'package:servipopapp/views/services/create_service_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:servipopapp/widgets/onboarding_widget.dart';
 import 'core/styles/app_theme.dart';
 
 // ... otros imports ...
 
 void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-    // await initPusher();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-await FirebaseMsg().initFCM();
+  await FirebaseMsg().initFCM();
 
   runApp(
     MultiProvider(
@@ -71,10 +67,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final languageProvider = Provider.of<LanguageProvider>(context);
-
-    Future.delayed(const Duration(seconds: 2), () {
-      FlutterNativeSplash.remove();
-    });
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
