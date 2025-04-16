@@ -1,14 +1,44 @@
 // lib/auth/providers/auth_provider.dart
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:servipopapp/services/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
   bool _isAuthenticated = false;
+  bool _onboardingCompleted = false;
   String? _loginError;
 
   bool get isAuthenticated => _isAuthenticated;
+  bool get onboardingCompleted => _onboardingCompleted;
   String? get loginError => _loginError;
+
+  // Cargar el estado inicial
+  Future<void> initialize() async {
+    await _loadPersistedData();
+  }
+
+  // Cargar datos persistentes (token y estado de onboarding)
+  Future<void> _loadPersistedData() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // Verificar autenticación
+    final token = await _authService.getToken();
+    _isAuthenticated = token != null;
+    
+    // Cargar estado de onboarding
+    _onboardingCompleted = prefs.getBool('onboardingCompleted') ?? false;
+    
+    notifyListeners();
+  }
+
+  // Marcar el onboarding como completado
+  Future<void> completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboardingCompleted', true);
+    _onboardingCompleted = true;
+    notifyListeners();
+  }
 
   Future<void> checkAuth() async {
     final token = await _authService.getToken();
@@ -16,7 +46,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-   Future<void> login(String email, String password) async {
+  Future<void> login(String email, String password) async {
     try {
       _loginError = null;
       notifyListeners();
@@ -36,7 +66,8 @@ class AuthProvider with ChangeNotifier {
       throw LoginException('Ocurrió un error inesperado');
     }
   }
-String _translateError(String error) {
+
+  String _translateError(String error) {
     switch (error) {
       case 'invalid_credentials':
         return 'Correo o contraseña incorrectos';

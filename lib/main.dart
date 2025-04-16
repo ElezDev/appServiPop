@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:servipopapp/core/pusher.dart';
 import 'package:servipopapp/core/theme_provider.dart';
 import 'package:servipopapp/firebase_msg.dart';
 import 'package:servipopapp/firebase_options.dart';
@@ -9,6 +8,7 @@ import 'package:servipopapp/services/service_provider_provider.dart';
 import 'package:servipopapp/services/user_service.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
 import 'package:servipopapp/views/auth/login_view.dart';
+import 'package:servipopapp/views/auth/onboarding/onboarding_view.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
 import 'package:servipopapp/views/auth/providers/bookings_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
@@ -26,6 +26,7 @@ import 'package:servipopapp/views/splash/splash_screen.dart';
 import 'package:servipopapp/localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:servipopapp/widgets/onboarding_widget.dart';
 import 'core/styles/app_theme.dart';
 
 // ... otros imports ...
@@ -43,7 +44,7 @@ await FirebaseMsg().initFCM();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
@@ -94,6 +95,7 @@ class MyApp extends StatelessWidget {
       ],
       routes: {
         '/': (context) => const SplashScreen(),
+        '/onboarding': (context) => const OnboardingView(),
         '/login': (context) => const LoginView(),
         '/home': (context) => const MainApp(),
         '/register': (context) => const RegisterView(),
