@@ -20,6 +20,7 @@ import 'package:servipopapp/views/bookins/bookins_view.dart';
 import 'package:servipopapp/views/califications/califications_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
 import 'package:servipopapp/views/home/navigation_view.dart';
+import 'package:servipopapp/views/payments/payment_wompi_view.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
 import 'package:servipopapp/views/services/create_service_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';

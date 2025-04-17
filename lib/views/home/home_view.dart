@@ -9,6 +9,8 @@ import 'package:servipopapp/views/auth/providers/user_provider.dart';
 import 'package:servipopapp/views/category/all_category_view.dart';
 import 'package:servipopapp/views/home/user_drawer.dart';
 import 'package:servipopapp/views/notifications/notifications_page.dart';
+import 'package:servipopapp/views/payments/payment_wompi_view.dart';
+import 'package:servipopapp/views/payments/wompi_controller.dart';
 import 'package:servipopapp/views/provider/location_provider.dart';
 import 'package:servipopapp/widgets/category_list_widget.dart';
 import 'package:servipopapp/widgets/carousel_widget.dart';
@@ -44,7 +46,56 @@ class _HomeViewState extends State<HomeView>
       }
     });
   }
+Future<void> _initiateWompiPayment(BuildContext context) async {
+  try {
+    // 1. Obtener datos del usuario (si está autenticado)
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    final email = user?.email ?? 'test@servipop.com';
+    
+    // 2. Generar referencia única
+    final reference = 'SP_${DateTime.now().millisecondsSinceEpoch}';
+    
+    // 3. Crear la URL de pago
+    final checkoutUrl = WompiService.generateCheckoutUrl(
+      amount: 10000.0, // $10,000 COP para prueba
+      reference: reference,
+      redirectUrl: 'servipopapp://wompi/result',
+      customerEmail: email,
+    );
 
+    // 4. Navegar a la pantalla de pago
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WebViewCheckoutScreen(url: checkoutUrl),
+      ),
+    );
+
+    // 5. Manejar el resultado
+    if (result == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('¡Pago exitoso! Referencia: $reference'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pago cancelado o fallido'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -276,6 +327,44 @@ class _HomeViewState extends State<HomeView>
                         theme: theme,
                       ),
                       const ProviderGridWidget(),
+                      // Después del ProviderGridWidget en tu HomeView
+                      SectionTitle(title: 'Pagos con Wompi', theme: theme),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.purple, // Color característico de Wompi
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            elevation: 3,
+                          ),
+                          onPressed: () => _initiateWompiPayment(context),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/logo.png', // Asegúrate de agregar este asset
+                                height: 24,
+                                width: 24,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                'Probar Pago con Wompi',
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
