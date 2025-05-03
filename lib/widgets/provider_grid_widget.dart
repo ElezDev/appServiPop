@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:servipopapp/views/provider/provider_profile_view.dart';
 
 class ProviderGridWidget extends StatefulWidget {
+  const ProviderGridWidget({super.key});
+
   @override
   _ProviderGridWidgetState createState() => _ProviderGridWidgetState();
 }
+
 class _ProviderGridWidgetState extends State<ProviderGridWidget> {
   bool _isLoading = true; 
   final List<Map<String, dynamic>> providers = [];
@@ -16,7 +19,7 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
   }
 
   void _loadProviders() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       providers.addAll([
         {
@@ -40,16 +43,17 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? _buildSkeleton() : _buildProviderGrid();
+    final theme = Theme.of(context);
+    return _isLoading ? _buildSkeleton(theme) : _buildProviderGrid(theme);
   }
 
   // Construye el grid de proveedores
-  Widget _buildProviderGrid() {
+  Widget _buildProviderGrid(ThemeData theme) {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
@@ -59,14 +63,14 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
       itemBuilder: (context, index) {
         final provider = providers[index];
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProviderProfileView(provider: provider),
-              ),
-            );
-          },
+          // onTap: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => ProviderProfileView(provider: provider),
+          //     ),
+          //   );
+          // },
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
@@ -77,39 +81,64 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                     child: Image.network(
                       provider['image'],
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                            color: theme.primaryColor,
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: theme.cardColor,
+                        child: Center(
+                          child: Icon(
+                            Icons.person,
+                            size: 40,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         provider['name'],
-                        style: TextStyle(
-                          fontSize: 16,
+                        style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.green[900],
+                          color: theme.primaryColor,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         provider['profession'],
-                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                        ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Row(
                         children: [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          SizedBox(width: 5),
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 5),
                           Text(
                             provider['rating'].toString(),
-                            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                            ),
                           ),
                         ],
                       ),
@@ -125,18 +154,18 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
   }
 
   // Construye el skeleton loading
-  Widget _buildSkeleton() {
+  Widget _buildSkeleton(ThemeData theme) {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         childAspectRatio: 0.8,
       ),
-      itemCount: 4, // Número de skeletons a mostrar
+      itemCount: 4,
       itemBuilder: (context, index) {
         return Card(
           elevation: 4,
@@ -148,41 +177,41 @@ class _ProviderGridWidgetState extends State<ProviderGridWidget> {
             children: [
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                   child: Container(
-                    color: Colors.grey[300], // Color de fondo del skeleton
+                    color: theme.dividerColor.withOpacity(0.3),
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       width: 100,
                       height: 16,
-                      color: Colors.grey[300], // Skeleton para el nombre
+                      color: theme.dividerColor.withOpacity(0.3),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Container(
                       width: 80,
                       height: 14,
-                      color: Colors.grey[300], // Skeleton para la profesión
+                      color: theme.dividerColor.withOpacity(0.3),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Container(
                           width: 16,
                           height: 16,
-                          color: Colors.grey[300], // Skeleton para el ícono de estrella
+                          color: theme.dividerColor.withOpacity(0.3),
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Container(
                           width: 30,
                           height: 14,
-                          color: Colors.grey[300], // Skeleton para la calificación
+                          color: theme.dividerColor.withOpacity(0.3),
                         ),
                       ],
                     ),

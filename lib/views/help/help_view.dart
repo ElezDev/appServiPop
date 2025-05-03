@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:servipopapp/localizations.dart';
 
 class HelpView extends StatelessWidget {
+  const HelpView({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Ayuda',
-          style: TextStyle(
+          localizations.helpTitle,
+          style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
             letterSpacing: 1.2,
           ),
         ),
@@ -19,18 +23,24 @@ class HelpView extends StatelessWidget {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.green, Colors.lightGreen],
+              colors: [
+                theme.primaryColor,
+                theme.colorScheme.secondary,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
-        elevation: 10,
+        elevation: 4,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey[50]!],
+            colors: [
+              theme.colorScheme.background,
+              theme.colorScheme.surface,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -40,60 +50,46 @@ class HelpView extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   children: AnimationConfiguration.toStaggeredList(
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     childAnimationBuilder: (widget) => SlideAnimation(
                       horizontalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: widget,
-                      ),
+                      child: FadeInAnimation(child: widget),
                     ),
                     children: [
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.help_outline,
-                        title: '¿Cómo usar la aplicación?',
-                        description:
-                            'Explora nuestra guía paso a paso para aprender a utilizar todas las funciones de la aplicación.',
-                        onTap: () {
-                          // Navegar a una vista detallada
-                        },
+                        title: localizations.howToUse,
+                        description: localizations.howToUseDescription,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.payment,
-                        title: 'Métodos de pago',
-                        description:
-                            'Consulta los métodos de pago disponibles y cómo realizar transacciones seguras.',
-                        onTap: () {
-                          // Navegar a una vista detallada
-                        },
+                        title: localizations.paymentMethods,
+                        description: localizations.paymentMethodsDescription,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.security,
-                        title: 'Seguridad y privacidad',
-                        description:
-                            'Conoce cómo protegemos tus datos y garantizamos tu privacidad.',
-                        onTap: () {
-                          // Navegar a una vista detallada
-                        },
+                        title: localizations.securityAndPrivacy,
+                        description: localizations.securityAndPrivacyDescription,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       _buildHelpCard(
+                        context: context,
                         icon: Icons.contact_support,
-                        title: 'Contacto',
-                        description:
-                            '¿Necesitas ayuda adicional? Contáctanos directamente desde aquí.',
-                        onTap: () {
-                          // Navegar a una vista de contacto
-                        },
+                        title: localizations.contact,
+                        description: localizations.contactDescription,
                       ),
                     ],
                   ),
                 ),
               ),
-              _buildFooter(), // Footer agregado aquí
+              _buildFooter(context, localizations),
             ],
           ),
         ),
@@ -102,49 +98,66 @@ class HelpView extends StatelessWidget {
   }
 
   Widget _buildHelpCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String description,
-    required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+    
     return Card(
-      elevation: 5,
+      elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          // Navegar a una vista detallada
+        },
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(icon, size: 40, color: Colors.green),
-              SizedBox(width: 16),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon, 
+                  size: 32,
+                  color: theme.primaryColor,
+                ),
+              ),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.primaryColor,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green[800],
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       description,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.green),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: theme.primaryColor,
+              ),
             ],
           ),
         ),
@@ -152,33 +165,33 @@ class HelpView extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(BuildContext context, AppLocalizations localizations) {
+    final theme = Theme.of(context);
+    
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
+        color: theme.primaryColor.withOpacity(0.05),
         border: Border(
-          top: BorderSide(color: Colors.green.withOpacity(0.2)),
+          top: BorderSide(
+            color: theme.dividerColor,
+            width: 1,
+          ),
         ),
       ),
       child: Center(
         child: Column(
           children: [
             Text(
-              'Desarrollado por ElezDevTech',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
+              localizations.developedBy,
+              style: theme.textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
-              '© 2025 - Todos los derechos reservados',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              localizations.copyright,
+              style: theme.textTheme.bodySmall,
             ),
           ],
         ),

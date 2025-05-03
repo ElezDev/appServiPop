@@ -26,9 +26,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static Map<String, dynamic> _notInlinedMessages(_) => {
       'appTitle': MessageLookupByLibrary.simpleMessage('Servicios Domésticos'),
+    'contact': MessageLookupByLibrary.simpleMessage('Contacto'),
+    'contactDescription': MessageLookupByLibrary.simpleMessage('¿Necesitas ayuda adicional? Contáctanos directamente desde aquí.'),
+    'copyright': MessageLookupByLibrary.simpleMessage('© 2025 - Todos los derechos reservados'),
+    'developedBy': MessageLookupByLibrary.simpleMessage('Desarrollado por ElezDevTech'),
     'favorites': MessageLookupByLibrary.simpleMessage('Favoritos'),
+    'helpTitle': MessageLookupByLibrary.simpleMessage('Ayuda'),
     'home': MessageLookupByLibrary.simpleMessage('Inicio'),
+    'howToUse': MessageLookupByLibrary.simpleMessage('¿Cómo usar la aplicación?'),
+    'howToUseDescription': MessageLookupByLibrary.simpleMessage('Explora nuestra guía paso a paso para aprender a utilizar todas las funciones de la aplicación.'),
+    'paymentMethods': MessageLookupByLibrary.simpleMessage('Métodos de pago'),
+    'paymentMethodsDescription': MessageLookupByLibrary.simpleMessage('Consulta los métodos de pago disponibles y cómo realizar transacciones seguras.'),
     'profile': MessageLookupByLibrary.simpleMessage('Perfil'),
-    'search': MessageLookupByLibrary.simpleMessage('Buscar')
+    'search': MessageLookupByLibrary.simpleMessage('Buscar'),
+    'securityAndPrivacy': MessageLookupByLibrary.simpleMessage('Seguridad y privacidad'),
+    'securityAndPrivacyDescription': MessageLookupByLibrary.simpleMessage('Conoce cómo protegemos tus datos y garantizamos tu privacidad.')
   };
 }

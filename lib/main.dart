@@ -1,151 +1,125 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:servipopapp/core/theme_provider.dart';
+import 'package:servipopapp/firebase_msg.dart';
+import 'package:servipopapp/firebase_options.dart';
+import 'package:servipopapp/services/service_provider_provider.dart';
+import 'package:servipopapp/services/user_service.dart';
 import 'package:servipopapp/views/auth/forgot_password_view.dart';
 import 'package:servipopapp/views/auth/login_view.dart';
+import 'package:servipopapp/views/auth/onboarding/onboarding_view.dart';
 import 'package:servipopapp/views/auth/providers/auth_provider.dart';
+import 'package:servipopapp/views/auth/providers/bookings_provider.dart';
 import 'package:servipopapp/views/auth/providers/category_provider.dart';
 import 'package:servipopapp/views/auth/providers/language_provider.dart';
+import 'package:servipopapp/views/auth/providers/notification_provider.dart';
+import 'package:servipopapp/views/auth/providers/user_provider.dart';
 import 'package:servipopapp/views/auth/register_view.dart';
+import 'package:servipopapp/views/bookins/bookins_view.dart';
+import 'package:servipopapp/views/califications/califications_view.dart';
 import 'package:servipopapp/views/help/help_view.dart';
-import 'package:servipopapp/views/home/home_view.dart';
-import 'package:servipopapp/views/profile/profile_view.dart';
+import 'package:servipopapp/views/home/navigation_view.dart';
+import 'package:servipopapp/views/payments/payment_wompi_view.dart';
+import 'package:servipopapp/views/provider/location_provider.dart';
+import 'package:servipopapp/views/services/create_service_view.dart';
 import 'package:servipopapp/views/splash/splash_screen.dart';
-import 'package:servipopapp/localizations.dart'; // Importa el archivo de localizaciones
-import 'package:flutter_localizations/flutter_localizations.dart'; // Importa las localizaciones de Flutter
+import 'package:servipopapp/localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/styles/app_theme.dart';
 
-void main() {
-  runApp(MyApp());
+// ... otros imports ...
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await FirebaseMsg().initFCM();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()..initialize()),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider(create: (_) => ServiceProviderProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()), 
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => BookingsProvider()),
+
+
+
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(userService: UserService()),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => CategoryProvider()),
-        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Servicios Domésticos',
+      theme: appTheme, 
+      darkTheme: _buildDarkTheme(),
+      themeMode: themeProvider.themeMode,
+      locale: languageProvider.locale,
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
-      child: Builder(
-        builder: (context) {
-          final languageProvider = Provider.of<LanguageProvider>(context, listen: true);
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+      ],
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/onboarding': (context) => const OnboardingView(),
+        '/login': (context) => const LoginView(),
+        '/home': (context) => const MainApp(),
+        '/register': (context) => const RegisterView(),
+        '/forgot-password': (context) => ForgotPasswordView(),
+        '/help': (context) => const HelpView(),
+        '/service-form': (context) => CreateServiceScreen(),
+        '/rating': (context) => const CalificationsView(),
+        '/bookinsProvider': (context) => const BookingsScreen(),
+      },
+    );
+  }
 
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Servicios Domésticos',
-            theme: appTheme,
-            locale: languageProvider.locale,
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', ''), // Inglés
-              const Locale('es', ''), // Español
-            ],
-            routes: {
-              '/': (context) => SplashScreen(),
-              '/login': (context) => LoginView(),
-              '/home': (context) => MainApp(),
-              '/register': (context) => RegisterView(),
-              '/forgot-password': (context) => ForgotPasswordView(),
-              '/help': (context) => HelpView(),
-            },
-          );
-        },
+  ThemeData _buildDarkTheme() {
+    return ThemeData.dark().copyWith(
+      primaryColor: const Color(0xFF81C784),
+      colorScheme: const ColorScheme.dark(
+        primary: Color(0xFF81C784),
+        secondary: Color(0xFF00C535),
+      ),
+      appBarTheme: AppBarTheme(
+        color: Colors.grey[900],
+      ),
+      cardTheme: CardTheme(
+        color: Colors.grey[850],
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.grey[800],
       ),
     );
   }
+  
 }
 
-class MainApp extends StatefulWidget {
-  @override
-  _MainAppState createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    HomeView(),
-    SearchView(),
-    FavoritesView(),
-    ProfileView(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
-
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, -5),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.green,
-            unselectedItemColor: Colors.grey[600],
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: localizations.home, // Usa la traducción
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: localizations.search, // Usa la traducción
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: localizations.favorites, // Usa la traducción
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: localizations.profile, // Usa la traducción
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Pantallas adicionales (puedes moverlas a sus propios archivos)
-class SearchView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
-    return Center(child: Text(localizations.search)); // Usa la traducción
-  }
-}
-
-class FavoritesView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Obtén las traducciones
-    return Center(child: Text(localizations.favorites)); // Usa la traducción
-  }
-}

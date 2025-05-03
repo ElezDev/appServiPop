@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "572927803857",
+    "project_id": "servipop-bd114",
+    "storage_bucket": "servipop-bd114.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572927803857:android:c71acc8bf05bf196b460f0",
+        "android_client_info": {
+          "package_name": "com.elezdev.servipopapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUSYU1z4HsGGXdUFeBnKzJuzTm_2I_C_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,9 +26,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static Map<String, dynamic> _notInlinedMessages(_) => {
       'appTitle': MessageLookupByLibrary.simpleMessage('Domestic Services'),
+    'contact': MessageLookupByLibrary.simpleMessage('Contact'),
+    'contactDescription': MessageLookupByLibrary.simpleMessage('Need additional help? Contact us directly from here.'),
+    'copyright': MessageLookupByLibrary.simpleMessage('© 2025 - All rights reserved'),
+    'developedBy': MessageLookupByLibrary.simpleMessage('Developed by ElezDevTech'),
     'favorites': MessageLookupByLibrary.simpleMessage('Favorites'),
+    'helpTitle': MessageLookupByLibrary.simpleMessage('Help'),
     'home': MessageLookupByLibrary.simpleMessage('Home'),
+    'howToUse': MessageLookupByLibrary.simpleMessage('How to use the app?'),
+    'howToUseDescription': MessageLookupByLibrary.simpleMessage('Explore our step-by-step guide to learn how to use all the features of the app.'),
+    'paymentMethods': MessageLookupByLibrary.simpleMessage('Payment Methods'),
+    'paymentMethodsDescription': MessageLookupByLibrary.simpleMessage('Check the available payment methods and how to make secure transactions.'),
     'profile': MessageLookupByLibrary.simpleMessage('Profile'),
-    'search': MessageLookupByLibrary.simpleMessage('Search')
+    'search': MessageLookupByLibrary.simpleMessage('Search'),
+    'securityAndPrivacy': MessageLookupByLibrary.simpleMessage('Security and Privacy'),
+    'securityAndPrivacyDescription': MessageLookupByLibrary.simpleMessage('Learn how we protect your data and ensure your privacy.')
   };
 }

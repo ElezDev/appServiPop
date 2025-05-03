@@ -1,293 +1,334 @@
-// lib/views/profile/profile_view.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:servipopapp/models/user_model.dart';
+import 'package:servipopapp/views/Profile/become_provider_view.dart';
+import 'package:servipopapp/views/auth/providers/user_provider.dart';
 
 class ProfileView extends StatelessWidget {
+  const ProfileView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.user;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Perfil',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.green,
-        elevation: 0,
-      ),
+      backgroundColor: theme.colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header del Perfil con gradiente
-            Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.green, Colors.lightGreen],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                children: [
-                  // Avatar con sombra
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                          'https://via.placeholder.com/150'), // Reemplaza con la foto del usuario
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Juan Pérez',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'juan.perez@gmail.com',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Información del Usuario
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _buildInfoTile(
-                    icon: Icons.phone,
-                    title: 'Teléfono',
-                    subtitle: '+51 987 654 321',
-                  ),
-                  Divider(height: 20, color: Colors.grey[300]),
-                  _buildInfoTile(
-                    icon: Icons.location_on,
-                    title: 'Dirección',
-                    subtitle: 'Calle Falsa 123, Lima, Perú',
-                  ),
-                ],
-              ),
-            ),
-
-            // Acciones del Usuario
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  _buildActionButton(
-                    icon: Icons.edit,
-                    label: 'Editar Perfil',
-                    onPressed: () {
-                      // Navegar a la pantalla de editar perfil
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  _buildActionButton(
-                    icon: Icons.lock,
-                    label: 'Cambiar Contraseña',
-                    isOutlined: true,
-                    onPressed: () {
-                      // Navegar a la pantalla de cambiar contraseña
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // Sección de Servicios con scroll horizontal
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Servicios que ofreces',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green[900],
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // Lista de servicios con scroll horizontal
-                  Container(
-                    height: 180, // Altura fija para el contenedor de tarjetas
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: _buildServiceCards(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildHeader(context, user, theme),
+            const SizedBox(height: 20),
+            _buildProfileCard(user, theme),
+            const SizedBox(height: 20),
+            _buildOptions(context, theme),
+            const SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
 
-  // Método para construir un tile de información
-  Widget _buildInfoTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.green),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey[800],
+  Widget _buildHeader(BuildContext context, User? user, ThemeData theme) {
+    return Stack(
+      children: [
+        Container(
+          height: 220,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                theme.primaryColor,
+                theme.colorScheme.secondary,
+              ],
+            ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
         ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        Positioned(
+          top: 40,
+          right: 20,
+          child: IconButton(
+            icon: Icon(Icons.edit, color: theme.colorScheme.onPrimary),
+            onPressed: () {
+              // Navegar a la pantalla de edición de perfil
+            },
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+          left: 0,
+          right: 0,
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 60,
+                backgroundColor: theme.colorScheme.onPrimary,
+                child: CircleAvatar(
+                  radius: 56,
+                  backgroundImage: user?.avatar != null 
+                      ? CachedNetworkImageProvider(user!.avatar!) 
+                      : const AssetImage('assets/default_avatar.png') as ImageProvider,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '${user?.name ?? ''} ${user?.lastname ?? ''}',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (user?.email != null)
+                Text(
+                  user!.email!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onPrimary.withOpacity(0.9),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileCard(User? user, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              _buildInfoRow(Icons.phone, 'Teléfono', user?.phone ?? 'No proporcionado', theme),
+              const Divider(height: 30),
+              _buildInfoRow(Icons.location_on, 'Dirección', user?.address ?? 'No proporcionada', theme),
+              const Divider(height: 30),
+              _buildInfoRow(Icons.verified_user, 'Verificación', 
+                  user?.emailVerifiedAt != null ? 'Correo verificado' : 'Correo no verificado', theme),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  // Método para construir un botón de acción
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    bool isOutlined = false,
-    required VoidCallback onPressed,
-  }) {
-    return isOutlined
-        ? OutlinedButton(
-            onPressed: onPressed,
-            style: OutlinedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              side: BorderSide(color: Colors.green),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+  Widget _buildInfoRow(IconData icon, String title, String value, ThemeData theme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: theme.primaryColor, size: 24),
+        const SizedBox(width: 15),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                ),
               ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: Colors.green),
-                SizedBox(width: 10),
-                Text(
-                  label,
-                  style: TextStyle(fontSize: 16, color: Colors.green),
+              const SizedBox(height: 5),
+              Text(
+                value,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
                 ),
-              ],
-            ),
-          )
-        : ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              padding: EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: Colors.white),
-                SizedBox(width: 10),
-                Text(
-                  label,
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ],
-            ),
-          );
-  }
-
-  // Método para construir las tarjetas de servicios
-  List<Widget> _buildServiceCards() {
-    final services = [
-      {
-        'icon': Icons.cleaning_services,
-        'title': 'Limpieza del Hogar',
-        'description': 'Servicio de limpieza profunda para tu hogar.',
-      },
-      {
-        'icon': Icons.plumbing,
-        'title': 'Plomería',
-        'description': 'Reparación e instalación de tuberías y grifería.',
-      },
-      {
-        'icon': Icons.electrical_services,
-        'title': 'Electricidad',
-        'description': 'Instalación y reparación de sistemas eléctricos.',
-      },
-      {
-        'icon': Icons.carpenter,
-        'title': 'Carpintería',
-        'description': 'Trabajos de carpintería y muebles a medida.',
-      },
-    ];
-
-    return services.map((service) {
-      return Container(
-        width: 160, // Ancho fijo para cada tarjeta
-        margin: EdgeInsets.only(right: 10),
-        child: Card(
-          elevation: 3,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(service['icon'] as IconData, color: Colors.green, size: 30),
-                SizedBox(height: 10),
-                Text(
-                  service['title'] as String,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green[900],
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  service['description'] as String,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-              ],
-            ),
+            ],
           ),
         ),
-      );
-    }).toList();
+      ],
+    );
+  }
+
+  Widget _buildOptions(BuildContext context, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          _buildOptionButton(
+            context,
+            title: 'Convertirse en Proveedor',
+            icon: Icons.store,
+            color: theme.primaryColor,
+            theme: theme,
+            onTap: () {
+              _showBecomeProviderDialog(context, theme);
+            },
+          ),
+          const SizedBox(height: 15),
+          _buildOptionButton(
+            context,
+            title: 'Configuración',
+            icon: Icons.settings,
+            color: theme.colorScheme.secondary,
+            theme: theme,
+            onTap: () {
+              // Navegar a configuración
+            },
+          ),
+          const SizedBox(height: 15),
+          _buildOptionButton(
+            context,
+            title: 'Cerrar Sesión',
+            icon: Icons.exit_to_app,
+            color: theme.colorScheme.error,
+            theme: theme,
+            onTap: () {
+              // Lógica para cerrar sesión
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionButton(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required Color color,
+    required ThemeData theme,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color),
+            ),
+            const SizedBox(width: 15),
+            Text(
+              title,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Spacer(),
+            Icon(Icons.chevron_right, color: theme.dividerColor),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showBecomeProviderDialog(BuildContext context, ThemeData theme) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          'Convertirse en Proveedor',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '¿Deseas convertirte en proveedor de servicios?',
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Como proveedor podrás:',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.primaryColor,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildFeatureItem('Publicar tus servicios', theme),
+            _buildFeatureItem('Gestionar tus ofertas', theme),
+            _buildFeatureItem('Recibir solicitudes de clientes', theme),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancelar',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.textTheme.bodyMedium?.color,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BecomeProviderScreen(),
+                ),
+              );
+            },
+            child: Text(
+              'Confirmar',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(String text, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(Icons.check_circle, color: theme.primaryColor, size: 18),
+          const SizedBox(width: 8),
+          Text(text, style: theme.textTheme.bodyMedium),
+        ],
+      ),
+    );
   }
 }

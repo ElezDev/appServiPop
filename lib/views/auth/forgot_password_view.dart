@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 class ForgotPasswordView extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Clave para el formulario
+  final _formKey = GlobalKey<FormState>();
+
+  ForgotPasswordView({super.key}); // Clave para el formulario
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recuperar Contraseña'),
+        title: const Text('Recuperar Contraseña'),
         backgroundColor: Colors.green, // Coherencia con el diseño
       ),
       body: Padding(
@@ -27,7 +29,7 @@ class ForgotPasswordView extends StatelessWidget {
                   color: Colors.green[900],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Subtítulo
               Text(
                 'Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.',
@@ -37,13 +39,13 @@ class ForgotPasswordView extends StatelessWidget {
                   color: Colors.grey[700],
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               // Campo de email
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  prefixIcon: Icon(Icons.email, color: Colors.green),
+                  prefixIcon: const Icon(Icons.email, color: Colors.green),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -58,7 +60,7 @@ class ForgotPasswordView extends StatelessWidget {
                   return null;
                 },
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // Botón de enviar
               ElevatedButton(
                 onPressed: () {
@@ -70,17 +72,17 @@ class ForgotPasswordView extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Enviar',
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Enlace para volver al login
               TextButton(
                 onPressed: () {

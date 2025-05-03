@@ -4,5 +4,16 @@
     "home": "Inicio",
     "search": "Buscar",
     "favorites": "Favoritos",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "helpTitle": "Ayuda",
+    "howToUse": "¿Cómo usar la aplicación?",
+    "howToUseDescription": "Explora nuestra guía paso a paso para aprender a utilizar todas las funciones de la aplicación.",
+    "paymentMethods": "Métodos de pago",
+    "paymentMethodsDescription": "Consulta los métodos de pago disponibles y cómo realizar transacciones seguras.",
+    "securityAndPrivacy": "Seguridad y privacidad",
+    "securityAndPrivacyDescription": "Conoce cómo protegemos tus datos y garantizamos tu privacidad.",
+    "contact": "Contacto",
+    "contactDescription": "¿Necesitas ayuda adicional? Contáctanos directamente desde aquí.",
+    "developedBy": "Desarrollado por ElezDevTech",
+    "copyright": "© 2025 - Todos los derechos reservados"
   }
